@@ -1,0 +1,5 @@
+node_modules
+bot/node_modules
+web/node_modules
+coverage
+.env
