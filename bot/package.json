@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@slack/client": "^3.10.0",
+    "babel-cli": "^6.24.1",
+    "babel-preset-node6": "^11.0.0",
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "gifencoder": "^1.0.6",
+    "phantom": "^4.0.3",
+    "png-file-stream": "^1.0.0",
+    "watson-developer-cloud": "^2.32.1"
+  }
+}
