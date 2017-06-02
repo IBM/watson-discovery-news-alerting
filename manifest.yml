@@ -1,0 +1,7 @@
+---
+memory: 512M
+instances: 1
+applications:
+- name: eee-web
+  path: ./web
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35

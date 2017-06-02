@@ -8,15 +8,16 @@
     "react-dom": "^15.5.4",
     "react-router-dom": "^4.1.1",
     "recharts": "^1.0.0-alpha.0",
-    "watson-react-components": "^0.6.9"
-  },
-  "devDependencies": {
+    "watson-react-components": "^0.6.9",
     "react-scripts": "1.0.7"
   },
+  "engines": {
+    "node": "7.10.0"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "./node_modules/react-scripts/bin/react-scripts.js start",
+    "build": "./node_modules/react-scripts/bin/react-scripts.js build",
+    "test": "./node_modules/react-scripts/bin/react-scripts.js test --env=jsdom",
+    "eject": "./node_modules/react-scripts/bin/react-scripts.js eject"
   }
 }
