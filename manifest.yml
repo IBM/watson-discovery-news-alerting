@@ -1,14 +1,7 @@
 ---
-memory: 512M
+memory: 1G
 instances: 1
-declared-services:
-  cloudantNoSQLDB-service:
-    label: cloudantNoSQLDB
-    plan: Lite
 applications:
 - name: eee-web
   path: ./web
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
-  services:
-  - discovery-service
-  - cloudantNoSQLDB-service
