@@ -1,5 +1,4 @@
 {
-  "presets": ["node6", "es2015", "react"],
-  "plugins": ['transform-runtime', 'transform-decorators-legacy', 'transform-class-properties', 'react-hot-loader/babel']
+  "presets": ["es2015", "node6", "react"]
 }
 

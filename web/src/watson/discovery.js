@@ -1,0 +1,105 @@
+import { DiscoveryV1 } from 'watson-developer-cloud'
+import cfenv from 'cfenv'
+
+function getDiscoveryCredentials() {
+  const appEnv = cfenv.getAppEnv()
+
+  const services = appEnv.getServices()
+  let credentials = null
+  for (let serviceName of Object.keys(services)) {
+    if (services[serviceName].label === 'discovery') {
+      credentials = services[serviceName].credentials
+    }
+  }
+
+  if (credentials == null) {
+    throw new ReferenceError('No credentials found for the discovery service.')
+  }
+
+  return credentials
+}
+
+async function getFirstDiscoverNewsEnvironment(discovery) {
+  return new Promise( (resolve, reject) => {
+      discovery.getEnvironments({}, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          for (const env of data.environments) {
+            if (env.name == 'Watson News Environment') {
+              resolve(env)
+            }
+          }
+
+          reject("No environment named 'Watson News Environment' found")
+        }
+      })
+  })
+}
+
+async function getFirstDiscoverNewsCollection(discovery, environment) {
+  return new Promise( (resolve, reject) => {
+    discovery.getCollections({environment_id: environment.environment_id}, (error, data) => {
+      if (error) {
+        reject(error)
+      } else {
+        for (const col of data.collections) {
+          if (col.name == 'watson_news') {
+            resolve(col)
+          }
+        }
+
+        reject("No collection named  found")
+      }
+    })
+  })
+}
+
+function makeQuery(params) {
+  const credentials = getDiscoveryCredentials()
+
+  const discovery = new DiscoveryV1({
+    username: credentials.username,
+    password: credentials.password,
+    version_date: '2016-11-07'
+  })
+
+  return new Promise(async (resolve, reject) => {
+    const environment = await getFirstDiscoverNewsEnvironment(discovery)
+    const collection = await getFirstDiscoverNewsCollection(discovery, environment)
+
+    params.environment_id = environment.environment_id
+    params.collection_id = collection.collection_id
+
+    discovery.query(params, (error, data) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export function getNewsAlert(company_name) {
+  const params = {
+    query: company_name,
+    filter: 'enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company',
+    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)'
+  }
+
+  return makeQuery(params)
+}
+
+export function getEventAlert(industry) {
+  const params = {
+    query: `enrichedTitle.taxonomy.label:${industry}`,
+    filter: 'enrichedTitle.relations.subject.entities.type::Company,enrichedTitle.relations.action.verb.text:aquire',
+    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)'
+  }
+
+  return makeQuery(params)
+}
+
+// getNewsAlert('IBM').then(console.log)
+// getEventAlert('/finance/bank').then(console.log)
