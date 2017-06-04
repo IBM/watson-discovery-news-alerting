@@ -2,20 +2,19 @@ import React from 'react'
 import { Header, Footer, Jumbotron } from 'watson-react-components/dist/components'
 import { Grid } from 'react-bootstrap'
 
-import './App.css'
-import 'watson-react-components/dist/css/watson-react-components.min.css'
-
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-import { Example } from './components/examples'
+import { ExampleList, Example } from './components/examples'
+
+import './App.css'
+import 'watson-react-components/dist/css/watson-react-components.min.css'
+import 'url-search-params-polyfill'
 
 const Home = () => (
   <div>
     <Header
       mainBreadcrumbs='Discovery News'
-      mainBreadcrumbsUrl=''
-      subBreadcrumbs='Alerting'
-      subBreadcrumbsUrl=''
+      mainBreadcrumbsUrl='/'
       hasWordmark={true} />
     <Jumbotron
       serviceName='Discovery News Alerting'
@@ -28,7 +27,7 @@ const Home = () => (
       description="TODO: Integrate Watson's Discovery News Service into existing workflows using a Slack application and periodic push updates."
     />
     <Grid>
-      <Example />
+      <ExampleList />
     </Grid>
     <Footer />
   </div>

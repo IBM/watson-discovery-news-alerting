@@ -5,3 +5,16 @@ label.clickable-tab {
 #alertCompanyName, #eventCompanyName {
   background-color: #f4f4f4;
 }
+
+.center-text {
+  text-align: center;
+}
+
+li::before {
+  content: "" !important;
+  content: none !important;
+}
+
+.extra-right-space {
+  margin-right: 0.5em;
+}

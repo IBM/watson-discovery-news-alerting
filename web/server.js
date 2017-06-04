@@ -3,7 +3,7 @@ import express from 'express'
 import morgan from 'morgan'
 import path from 'path'
 
-import { getNewsAlert, getEevntAlert } from './src/watson/discovery'
+import { getNewsAlert, getEventAlert } from './src/watson/discovery'
 
 const app = express()
 const port = process.env.PORT || 4391

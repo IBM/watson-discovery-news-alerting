@@ -49,7 +49,7 @@ async function getFirstDiscoverNewsCollection(discovery, environment) {
           }
         }
 
-        reject("No collection named  found")
+        reject("No collection named watson_news found")
       }
     })
   })
@@ -85,7 +85,8 @@ export function getNewsAlert(company_name) {
   const params = {
     query: company_name,
     filter: 'enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)'
+    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
+    return: 'blekko.snippet,title,url'
   }
 
   return makeQuery(params)
@@ -95,7 +96,8 @@ export function getEventAlert(industry) {
   const params = {
     query: `enrichedTitle.taxonomy.label:${industry}`,
     filter: 'enrichedTitle.relations.subject.entities.type::Company,enrichedTitle.relations.action.verb.text:aquire',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)'
+    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
+    return: 'blekko.snippet,title,url'
   }
 
   return makeQuery(params)
