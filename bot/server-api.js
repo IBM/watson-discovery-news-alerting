@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('public'))
 
-app.listen(port, _ => console.log(`Listening on port ${port}.`) )
+app.listen(port, () => console.log(`Listening on port ${port}.`) )
 
 app.post('/button', (req, res) => {
   console.log(req.body)
