@@ -1,23 +1,5 @@
 import { DiscoveryV1 } from 'watson-developer-cloud'
-import cfenv from 'cfenv'
-
-function getDiscoveryCredentials() {
-  const appEnv = cfenv.getAppEnv()
-
-  const services = appEnv.getServices()
-  let credentials = null
-  for (let serviceName of Object.keys(services)) {
-    if (services[serviceName].label === 'discovery') {
-      credentials = services[serviceName].credentials
-    }
-  }
-
-  if (credentials == null) {
-    throw new ReferenceError('No credentials found for the discovery service.')
-  }
-
-  return credentials
-}
+import { getCredentials } from '../bluemix/config'
 
 async function getFirstDiscoverNewsEnvironment(discovery) {
   return new Promise( (resolve, reject) => {
@@ -56,7 +38,7 @@ async function getFirstDiscoverNewsCollection(discovery, environment) {
 }
 
 function makeQuery(params) {
-  const credentials = getDiscoveryCredentials()
+  const credentials = getCredentials('discovery')
 
   const discovery = new DiscoveryV1({
     username: credentials.username,

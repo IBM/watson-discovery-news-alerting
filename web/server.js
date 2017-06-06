@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import path from 'path'
 
 import { getNewsAlert, getEventAlert } from './src/watson/discovery'
+import { track } from './src/models/track'
 
 const app = express()
 const port = process.env.PORT || 4391
@@ -30,6 +31,16 @@ app.get('/api/1/event-alerts', (req, res) => {
   const industry = req.query.industry
   getEventAlert(industry)
     .then((response) => res.json(response))
+    .catch((error) => genericError(res, error))
+})
+
+app.post('/api/1/tracking', (req, res) => {
+  const email = req.body.email
+  const query = req.body.query
+  const frequency = req.body.frequency
+
+  track(email, query, frequency)
+    .then((result) => res.json(result))
     .catch((error) => genericError(res, error))
 })
 

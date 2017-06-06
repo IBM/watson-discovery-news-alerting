@@ -4,6 +4,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 import { Grid, Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Header, Footer, Icon, TextInput, Radio, RadioGroup, Alert, JsonLinkInline } from 'watson-react-components/dist/components'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import 'whatwg-fetch'
+
+import { Tracking } from './tracking'
 
 // Taken from https://github.com/github/fetch/issues/256
 function toQueryString(params) {
@@ -181,12 +184,14 @@ class AlertExample extends Component {
               </Alert>
             </Col>
           </Row>
+          <Tracking />
         </div>
       )
     } else {
       return (
         <div>
           <ExampleList selectedValue={this.state.selectedValue} />
+          <Tracking />
           <Row>
             <Col md={6} mdPush={6}>
               <Row>

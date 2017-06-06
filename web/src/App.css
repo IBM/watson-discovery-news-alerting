@@ -6,6 +6,10 @@ label.clickable-tab {
   background-color: #f4f4f4;
 }
 
+label[for="emailAddress"], label[htmlFor="emailAddress"] {
+  margin: 0px;
+}
+
 .center-text {
   text-align: center;
 }
