@@ -1,0 +1,11 @@
+{
+  "presets": ["es2015", "node6", "react"],
+  "plugins": [
+    [
+      "css-modules-transform", {
+        "extractCss": ["../web/src/App.css", "../web/node_modules/watson-react-components/dist/css/watson-react-components.min.css"]
+      }
+    ]
+  ]
+}
+

@@ -2,7 +2,7 @@ import React from 'react'
 import { Header, Footer, Jumbotron } from 'watson-react-components/dist/components'
 import { Grid } from 'react-bootstrap'
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import { ExampleList, Example } from './components/examples'
 
@@ -34,12 +34,10 @@ const Home = () => (
 )
 
 const App = () => (
-  <Router>
-    <Switch>
-      <Route exact path='/' component={Home} />
-      <Route path='/example' component={Example} />
-    </Switch>
-  </Router>
+  <Switch>
+    <Route exact path='/' component={Home} />
+    <Route path='/example' component={Example} />
+  </Switch>
 )
 
 export default App

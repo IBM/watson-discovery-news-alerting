@@ -2,7 +2,7 @@ label.clickable-tab {
   min-width: 100%;
 }
 
-#alertCompanyName, #eventCompanyName {
+#alertCompanyName, #eventCompanyName, #brandCompanyName {
   background-color: #f4f4f4;
 }
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts/lib'
 import { Grid, Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { Header, Footer, Icon, TextInput, Radio, RadioGroup, Alert, JsonLinkInline } from 'watson-react-components/dist/components'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import 'whatwg-fetch'
 
 import { Tracking } from './tracking'
@@ -184,7 +184,7 @@ class AlertExample extends Component {
               </Alert>
             </Col>
           </Row>
-          <Tracking />
+          <Tracking query={this.state.selectedValue} />
         </div>
       )
     } else {
@@ -266,8 +266,13 @@ AlertExample.propTypes = {
 
 class NewsAlertExample extends AlertExample {
   constructor(props) {
-    props.selectedValue = 'alert'
-    super(props)
+    // Forcing to start with the alert value selected
+    const overriddenProps = {
+      selectedValue: 'alert'
+    }
+    Object.assign(overriddenProps, props)
+
+    super(overriddenProps)
 
     this.getNewsAlerts = this.getNewsAlerts.bind(this)
   }
@@ -285,8 +290,12 @@ class NewsAlertExample extends AlertExample {
 
 class EventAlertExample extends AlertExample {
   constructor(props) {
-    props.selectedValue = 'event'
-    super(props)
+    const overriddenProps = {
+      selectedValue: 'event'
+    }
+    Object.assign(overriddenProps, props)
+
+    super(overriddenProps)
 
     this.getEventAlerts = this.getEventAlerts.bind(this)
   }
@@ -297,8 +306,31 @@ class EventAlertExample extends AlertExample {
   }
 
   componentDidMount() {
-    const companyName = this.state.params.get('industry') || '/finance/bank'
-    this.getEventAlerts(companyName)
+    const industry = this.state.params.get('industry') || '/finance/bank'
+    this.getEventAlerts(industry)
+  }
+}
+
+class BrandAlertExample extends AlertExample {
+  constructor(props) {
+    const overriddenProps = {
+      selectedValue: 'brand'
+    }
+    Object.assign(overriddenProps, props)
+
+    super(overriddenProps)
+
+    this.getBrandAlerts = this.getBrandAlerts.bind(this)
+  }
+
+  getEventAlerts(brand) {
+    const queryString = toQueryString({brand: brand})
+    this.getAlerts(`/api/1/brand-alerts?${queryString}`)
+  }
+
+  componentDidMount() {
+    const brand = this.state.params.get('brand') || 'watson'
+    this.getEventAlerts(brand)
   }
 }
 
@@ -335,7 +367,13 @@ export class ExampleList extends Component {
           <p>Develop innovative event detection applications by leveraging the API&rsquo;s support for subject, action, and object relationship extraction and checking for terms and actions such as &quot;acquisition&quot;, &quot;election results&quot;, or &quot;IPO&quot;. This sample event detection query returns technology company aquisitions.</p>
         </Col>
       )
-
+    } else if (this.state.selectedValue == 'brand') {
+      return (
+        <Col md={6} mdPush={6}>
+          <h2>Brand Sentiment</h2>
+          <p>Monitor sentiment of your brand in the news and quickly respond as negative press is posted by leveraging the API&rsquo;s support for sentiment analysis. This sample news alert query returns news about negative sentiment regarding a brand.</p>
+        </Col>
+      )
     } else {
       return (
         <Col md={6} mdPush={6}>
@@ -373,8 +411,6 @@ export class ExampleList extends Component {
                           placeholder='IBM'
                           id='alertCompanyName'
                           name='company_name'
-                          returnKeyType='search'
-                          keyboardAppearance='dark'
                           autoCapitalize='none'
                           onFocus={() => this.handleExampleChange('alert') }
                         />
@@ -396,10 +432,29 @@ export class ExampleList extends Component {
                           placeholder='/finance/bank'
                           id='eventCompanyName'
                           name='industry'
-                          returnKeyType='search'
-                          keyboardAppearance='dark'
                           autoCapitalize='none'
                           onFocus={() => this.handleExampleChange('event') }
+                        />
+                      </Col>
+                      <Col md={3}>
+                        <button type='submit'><Icon type="right" /></button>
+                      </Col>
+                    </Row>
+                  </form>
+                </Radio>
+                <Radio
+                  className='fullWidth'
+                  value='brand'>
+                  Monitor brand sentiment in the news:
+                  <form action='/example/brand-alert'>
+                    <Row>
+                      <Col md={9}>
+                        <TextInput
+                          placeholder='Watson'
+                          id='brandCompanyName'
+                          name='brand'
+                          autoCapitalize='none'
+                          onFocus={() => this.handleExampleChange('brand') }
                         />
                       </Col>
                       <Col md={3}>
@@ -438,13 +493,12 @@ export class Example extends Component {
           subBreadcrumbsUrl='/example'
           hasWordmark={true} />
         <Grid>
-          <Router>
-            <Switch>
-              <Route exact path={this.state.match.url} component={ExampleList} />
-              <Route path={`${this.state.match.url}/news-alert`} component={NewsAlertExample} />
-              <Route path={`${this.state.match.url}/event-alert`} component={EventAlertExample} />
-            </Switch>
-          </Router>
+          <Switch>
+            <Route exact path={this.state.match.url} component={ExampleList} />
+            <Route path={`${this.state.match.url}/news-alert`} component={NewsAlertExample} />
+            <Route path={`${this.state.match.url}/event-alert`} component={EventAlertExample} />
+            <Route path={`${this.state.match.url}/brand-alert`} component={BrandAlertExample} />
+          </Switch>
         </Grid>
         <Footer />
       </div>
