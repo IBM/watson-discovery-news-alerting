@@ -30,7 +30,8 @@ export async function track(email, query, frequency) {
   const result = await trackingDb.insert({
       email: email,
       query: query,
-      frequency: frequency
+      frequency: frequency,
+      lastUpdate: null
     },
     uuid.v4())
 

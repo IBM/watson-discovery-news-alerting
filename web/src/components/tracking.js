@@ -11,11 +11,15 @@ export class Tracking extends Component {
       loading: false,
       error: false,
       tracking: false,
+      email: null,
+      frequency: 'daily',
       query: props.query
     }
 
     this.createTracking = this.createTracking.bind(this)
     this.formSubmit = this.formSubmit.bind(this)
+    this.emailChanged = this.emailChanged.bind(this)
+    this.frequencyChanged = this.frequencyChanged.bind(this)
   }
 
   createTracking() {
@@ -26,9 +30,9 @@ export class Tracking extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: 'test@example.com',
+        email: this.state.email,
         query: this.state.query,
-        frequency: 'daily'
+        frequency: this.state.frequency
       })
     }
     fetch('/api/1/tracking', params)
@@ -45,9 +49,17 @@ export class Tracking extends Component {
       })
   }
 
+  emailChanged(e) {
+    this.setState({email: e.target.value})
+  }
+
   formSubmit(e) {
     e.preventDefault()
     this.createTracking()
+  }
+
+  frequencyChanged(e) {
+    this.setState({frequency: e.target.value})
   }
 
   render() {
@@ -83,10 +95,11 @@ export class Tracking extends Component {
               name='emailAddress'
               placeholder='Email address'
               disabled={this.state.loading}
+              onInput={this.emailChanged}
             />
           </Col>
           <Col md={3}>
-            <select name='frequency'>
+            <select name='frequency' value={this.state.frequency} onChange={this.frequencyChanged}>
               <option>daily</option>
               <option>weekly</option>
               <option>monthly</option>
