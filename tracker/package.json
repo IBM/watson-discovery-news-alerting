@@ -61,6 +61,7 @@
     "node": "7.10.0"
   },
   "scripts": {
-    "start": "./node_modules/babel-cli/bin/babel-node.js ./worker.js"
+    "start": "./node_modules/babel-cli/bin/babel-node.js ./worker.js",
+    "build": "./node_modules/babel-cli/bin/babel-node.js ./build.js"
   }
 }

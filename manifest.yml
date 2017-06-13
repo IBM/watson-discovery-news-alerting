@@ -1,5 +1,5 @@
 ---
-memory: 1G
+memory: 500MB
 instances: 1
 declared-services:
   discovery:
@@ -11,6 +11,12 @@ declared-services:
 applications:
 - name: eee-web
   path: ./web
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  services:
+  - cloudantNoSQLDB
+  - discovery
+- name: eee-tracker
+  path: ./tracker
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB

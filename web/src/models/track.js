@@ -1,8 +1,9 @@
 import Cloudant from 'cloudant'
 import uuid from 'uuid'
 import { getCredentials } from '../bluemix/config'
+import { day, week, month, yesterday, lastWeek, lastMonth } from './frequency'
 
-const dbName = 'tracking'
+const dbName = 'track'
 const credentials = getCredentials('cloudantNoSQLDB')
 
 const cloudant = Cloudant({
@@ -11,8 +12,7 @@ const cloudant = Cloudant({
   plugin: 'promises'
 })
 
-async function createTrackingDb(cloudant) {
-  const dbName = dbName
+export async function createTrackDb() {
   const dbs = await cloudant.db.list()
   if (dbs.includes(dbName)) {
     console.info('Database already exists: %s', dbName)
@@ -20,20 +20,122 @@ async function createTrackingDb(cloudant) {
     console.info('Creating database: %s', dbName)
     await cloudant.db.create(dbName)
   }
-  const trackingDb = cloudant.db.use(dbName)
+  const trackDb = cloudant.db.use(dbName)
 
-  return trackingDb
+  await trackDb.index({
+    name: 'subscriberFrequencyIndex',
+    type: 'json',
+    index: {
+      fields: [
+        'subscribed',
+        'frequency',
+        'lastUpdate'
+      ]
+    }
+  })
+
+  await trackDb.index({
+    name: 'emailIndex',
+    type: 'json',
+    index: {
+      fields: [
+        'email'
+      ]
+    }
+  })
+
+  return trackDb
 }
 
 export async function track(email, query, frequency) {
-  const trackingDb = cloudant.db.use(dbName)
-  const result = await trackingDb.insert({
+  const trackDb = cloudant.db.use(dbName)
+  const result = await trackDb.insert({
       email: email,
       query: query,
+      subscribed: true,
       frequency: frequency,
       lastUpdate: null
     },
     uuid.v4())
 
   return result
+}
+
+export async function getSubscribers(frequency) {
+  let lastUpdated = null
+
+  if (frequency === 'daily') {
+    lastUpdated = yesterday()
+  } else if (frequency === 'weekly') {
+    lastUpdated = lastWeek()
+  } else if (frequency === 'monthly') {
+    lastUpdated = lastMonth()
+  }
+
+  console.log('Checking for subscribers updated before %s.', lastUpdated)
+  const trackDb = cloudant.db.use(dbName)
+  const subscribers = await trackDb.find({
+    selector: {
+      $and: [
+        {
+          subscribed: true
+        },
+        {
+          frequency: frequency
+        },
+        {
+          $or: [
+            {
+              lastUpdate: null
+            },
+            {
+              lastUpdate: {
+                $lt: lastUpdated
+              }
+            }
+          ]
+        }
+      ]
+    }
+  })
+
+  return subscribers
+}
+
+export async function subscriptionsByEmail(email) {
+  const trackDb = cloudant.use(dbName)
+
+  const subscriptions = await trackDb.find({
+    selector: {
+      $and: [
+        {
+          subscribed: true
+        },
+        {
+          email: email
+        }
+      ]
+    }
+  })
+
+  return subscriptions
+}
+
+export async function unsubscribe(id) {
+  const trackDb = cloudant.use(dbName)
+
+  const subscription = await trackDb.get(id)
+
+  if (subscription) {
+    subscription.subscribed = false
+    await trackDb.insert(subscription)
+  } else {
+    throw new Error('No subscription by that id')
+  }
+}
+
+export async function subscriberUpdated(subscriber) {
+  const trackDb = cloudant.use(dbName)
+  subscriber.lastUpdate = new Date()
+  await trackDb.insert(subscriber)
 }

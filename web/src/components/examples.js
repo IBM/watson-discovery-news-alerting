@@ -367,7 +367,7 @@ export class ExampleList extends Component {
           <p>Develop innovative event detection applications by leveraging the API&rsquo;s support for subject, action, and object relationship extraction and checking for terms and actions such as &quot;acquisition&quot;, &quot;election results&quot;, or &quot;IPO&quot;. This sample event detection query returns technology company aquisitions.</p>
         </Col>
       )
-    } else if (this.state.selectedValue == 'brand') {
+    } else if (this.state.selectedValue === 'brand') {
       return (
         <Col md={6} mdPush={6}>
           <h2>Brand Sentiment</h2>

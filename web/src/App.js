@@ -5,6 +5,7 @@ import { Grid } from 'react-bootstrap'
 import { Route, Switch } from 'react-router-dom'
 
 import { ExampleList, Example } from './components/examples'
+import { CurrentSubscriptions } from './components/subscription'
 
 import './App.css'
 import 'watson-react-components/dist/css/watson-react-components.min.css'
@@ -37,6 +38,7 @@ const App = () => (
   <Switch>
     <Route exact path='/' component={Home} />
     <Route path='/example' component={Example} />
+    <Route path='/subscription' component={CurrentSubscriptions} />
   </Switch>
 )
 

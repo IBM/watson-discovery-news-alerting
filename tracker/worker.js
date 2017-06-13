@@ -6,18 +6,12 @@ import nodemailer from 'nodemailer'
 
 import { Email } from '../web/src/components/email'
 import { getNewsAlert, getEventAlert } from '../web/src/watson/discovery'
+import { getSubscribers, subscriberUpdated } from '../web/src/models/track'
+import { createCode } from '../web/src/models/access'
 
-const baseUrl = process.env.BASE_URL
-const rawSMTPSettings = process.env.SMTP_SETTINGS
-if (!rawSMTPSettings) {
-  throw new ReferenceError('No SMTP settings are defined for the mailer to work')
-}
-if (!baseUrl) {
-  throw new ReferenceError('No BASE_URL set, this is required in order to properly link emails back to the system displaying them')
-}
-const mailCredentials = JSON.parse(rawSMTPSettings)
 
-function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials) {
+function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials, oneTimeCode) {
+  console.log('Using one-time code of: %s', oneTimeCode)
   const transporter = nodemailer.createTransport({
     host: mailCredentials.host,
     port: 465,
@@ -60,9 +54,38 @@ function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials) {
   })
 }
 
-getNewsAlert('IBM')
-  .then((response) => {
-    console.log('Response from Watson: %s', JSON.stringify(response))
-    renderAndSendEmail('eerwitt@gmail.com', response.results, baseUrl, mailCredentials)
-  })
-  .catch(console.error)
+function sendSubscriberEmails() {
+  const baseUrl = process.env.BASE_URL
+  const rawSMTPSettings = process.env.SMTP_SETTINGS
+  if (!rawSMTPSettings) {
+    throw new ReferenceError('No SMTP settings are defined for the mailer to work')
+  }
+  if (!baseUrl) {
+    throw new ReferenceError('No BASE_URL set, this is required in order to properly link emails back to the system displaying them')
+  }
+  const mailCredentials = JSON.parse(rawSMTPSettings)
+
+  getSubscribers('daily')
+    .then((results) => {
+      console.log(results)
+      results.docs.map((subscriber) => {
+        getNewsAlert('Watson')
+          .then(async (response) => {
+            console.log('Sending email update')
+            const email = 'eerwitt@gmail.com'
+            const code = await createCode(email)
+            renderAndSendEmail(
+              email,
+              response.results,
+              baseUrl,
+              mailCredentials,
+              code)
+            await subscriberUpdated(subscriber)
+          })
+          .catch(console.error)
+      })
+    })
+    .catch(console.error)
+}
+
+sendSubscriberEmails()

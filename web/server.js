@@ -4,7 +4,8 @@ import morgan from 'morgan'
 import path from 'path'
 
 import { getNewsAlert, getEventAlert } from './src/watson/discovery'
-import { track } from './src/models/track'
+import { track, subscriptionsByEmail, unsubscribe } from './src/models/track'
+import { useCode } from './src/models/access'
 
 const app = express()
 const port = process.env.PORT || 4391
@@ -41,6 +42,33 @@ app.post('/api/1/tracking', (req, res) => {
 
   track(email, query, frequency)
     .then((result) => res.json(result))
+    .catch((error) => genericError(res, error))
+})
+
+app.get('/api/1/subscription/:token/', (req, res) => {
+  const token = req.params.token
+  if (!token || token.search(/[^\w\-]/) != -1) {
+    throw new TypeError('Invalid token provided.')
+  }
+  useCode(token)
+    .then((email) => subscriptionsByEmail(email))
+    .then((subscriptions) => res.json(subscriptions))
+      
+    .catch((error) => genericError(res, error))
+})
+
+app.post('/api/1/subscription/:token/unsubscribe/:id/', (req, res) => {
+  const token = req.params.token
+  const id = req.params.id
+  if (!token || token.search(/[^\w\-]/) != -1) {
+    throw new TypeError('Invalid token provided.')
+  }
+  if (!id || id.search(/[^\w\-]/) != -1) {
+    throw new TypeError('Invalid ID provided.')
+  }
+
+  unsubscribe(id)
+    .then(() => res.json({'status': 'success'}))
     .catch((error) => genericError(res, error))
 })
 
