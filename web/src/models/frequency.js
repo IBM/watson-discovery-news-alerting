@@ -24,3 +24,7 @@ export function lastMonth() {
 export function nextMonth() {
   return new Date(today().getTime() + month)
 }
+
+export function tomorrow() {
+  return new Date(today().getTime() + day)
+}

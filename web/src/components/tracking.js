@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { TextInput, Alert, Icon } from 'watson-react-components/dist/components'
+import { TextInput, Alert, Icon, ArrowBox, Colors } from 'watson-react-components/dist/components'
 import 'whatwg-fetch'
 
 export class Tracking extends Component {
@@ -11,6 +11,8 @@ export class Tracking extends Component {
       loading: false,
       error: false,
       tracking: false,
+      emailValid: false,
+      emailInvalid: null,
       email: null,
       frequency: 'daily',
       query: props.query
@@ -50,16 +52,35 @@ export class Tracking extends Component {
   }
 
   emailChanged(e) {
-    this.setState({email: e.target.value})
+    const value = e.target.value
+
+    // This is the RFC 5322 email regex from http://emailregex.com/
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (value && value.match(emailRegex)) {
+      this.setState({emailValid: true, emailInvalid: false})
+    }
+
+    this.setState({email: value})
   }
 
   formSubmit(e) {
     e.preventDefault()
-    this.createTracking()
+
+    if (this.state.emailValid) {
+      console.log('Email is valid.')
+      this.createTracking()
+    } else {
+      console.error('Invalid email was sent.')
+      this.setState({emailInvalid: true})
+    }
   }
 
   frequencyChanged(e) {
-    this.setState({frequency: e.target.value})
+    const value = e.target.value
+
+    if (value) {
+      this.setState({frequency: value})
+    }
   }
 
   render() {
@@ -90,6 +111,16 @@ export class Tracking extends Component {
             <p>Receive alerts when these results change:</p>
           </Col>
           <Col md={3}>
+            <ArrowBox
+              direction="bottom"
+              show={this.state.emailInvalid}
+              color={Colors.red_50}
+              icon="error"
+              >
+                <p className="base--p">
+                A valid email address is required to track these alerts.
+                </p>
+            </ArrowBox> 
             <TextInput
               id='emailAddress'
               name='emailAddress'
@@ -99,7 +130,7 @@ export class Tracking extends Component {
             />
           </Col>
           <Col md={3}>
-            <select name='frequency' value={this.state.frequency} onChange={this.frequencyChanged}>
+            <select name='frequency' value={this.state.frequency} onChange={this.frequencyChanged} className={this.state.frequencyClass}>
               <option>daily</option>
               <option>weekly</option>
               <option>monthly</option>

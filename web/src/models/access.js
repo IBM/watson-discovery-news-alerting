@@ -1,7 +1,7 @@
 import Cloudant from 'cloudant'
 import uuid from 'uuid'
 import { getCredentials } from '../bluemix/config'
-import { nextMonth } from './frequency'
+import { today, tomorrow } from './frequency'
 
 const dbName = 'access'
 const credentials = getCredentials('cloudantNoSQLDB')
@@ -42,7 +42,7 @@ export async function createCode(email) {
   const code = await accessDb.insert({
       used: false,
       email: email,
-      expiresAt: nextMonth()
+      expiresAt: tomorrow()
     },
     uuid.v4())
 
@@ -53,14 +53,10 @@ export async function useCode(codeId) {
   const accessDb = cloudant.db.use(dbName)
 
   const code = await accessDb.get(codeId)
-  if (code.used) {
+  if (code.used || code.expiresAt < today()) {
     console.error('Tried to use an already used code: %s', JSON.stringify(code))
     throw new Error('Invalid code error')
   }
-
-  // use the code and update the db
-  code.used = true
-  await accessDb.insert(code)
 
   return code.email
 }
