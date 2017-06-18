@@ -32,7 +32,7 @@ function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials, one
         <StaticRouter
           location='/news-alert'
           context={context}>
-          <Email baseUrl={baseUrl} results={results} />
+          <Email baseUrl={baseUrl} results={results} oneTimeCode={oneTimeCode} />
         </StaticRouter>
       </body>
     </html>
@@ -67,20 +67,21 @@ function sendSubscriberEmails() {
 
   getSubscribers('daily')
     .then((results) => {
-      console.log(results)
       results.docs.map((subscriber) => {
         getNewsAlert('Watson')
           .then(async (response) => {
-            console.log('Sending email update')
-            const email = 'eerwitt@gmail.com'
-            const code = await createCode(email)
-            renderAndSendEmail(
-              email,
-              response.results,
-              baseUrl,
-              mailCredentials,
-              code)
-            await subscriberUpdated(subscriber)
+            if (subscriber.destinationEmail) {
+              console.log('Sending email update')
+              const email = 'eerwitt@gmail.com'
+              const code = await createCode(email)
+              renderAndSendEmail(
+                email,
+                response.results,
+                baseUrl,
+                mailCredentials,
+                code)
+              await subscriberUpdated(subscriber)
+            }
           })
           .catch(console.error)
       })

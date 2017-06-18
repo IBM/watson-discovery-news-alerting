@@ -7,7 +7,8 @@ export class Email extends Component {
     super(props)
     this.state = {
       baseUrl: props.baseUrl || '/',
-      results: props.results
+      results: props.results,
+      oneTimeCode: props.oneTimeCode
     }
 
     this.body = this.body.bind(this)
@@ -101,9 +102,12 @@ export class Email extends Component {
             </td>
           </tr>
           <tr style={ {backgroundColor: '#323232', padding: '15px'} }>
-            <td colSpan="2">
+            <td>
               <a href='http://www.ibm.com/legal/us/en/' style={this.styles().footer}>Terms</a>
               <a href='http://www.ibm.com/privacy/us/en/' style={this.styles().footer}>Privacy</a>
+            </td>
+            <td>
+              <a href={`${this.state.baseUrl}/subscription/${this.state.oneTimeCode}/`} style={this.styles().footer}>Manage Subscriptions / Unsubscribe</a>
             </td>
           </tr>
         </tbody>
@@ -121,5 +125,6 @@ export class Email extends Component {
 }
 Email.propTypes = {
   baseUrl: PropTypes.string.isRequired,
-  results: PropTypes.array.isRequired
+  results: PropTypes.array.isRequired,
+  oneTimeCode: PropTypes.string.isRequired
 }

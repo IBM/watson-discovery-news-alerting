@@ -2,6 +2,7 @@ import Cloudant from 'cloudant'
 import uuid from 'uuid'
 import { getCredentials } from '../bluemix/config'
 import { day, week, month, yesterday, lastWeek, lastMonth } from './frequency'
+import { useCode } from './access'
 
 const dbName = 'track'
 const credentials = getCredentials('cloudantNoSQLDB')
@@ -53,6 +54,8 @@ export async function track(email, query, frequency) {
       email: email,
       query: query,
       subscribed: true,
+      destinationEmail: true,
+      destinationSlack: false,
       frequency: frequency,
       lastUpdate: null
     },
@@ -121,13 +124,28 @@ export async function subscriptionsByEmail(email) {
   return subscriptions
 }
 
-export async function unsubscribe(id) {
+export async function unsubscribe(code, id) {
   const trackDb = cloudant.use(dbName)
-
+  const accessEmail = await useCode(code)
   const subscription = await trackDb.get(id)
 
-  if (subscription) {
+  if (subscription && subscription.email === accessEmail) {
     subscription.subscribed = false
+    await trackDb.insert(subscription)
+  } else {
+    throw new Error('No subscription by that id')
+  }
+}
+
+export async function updateDestination(code, id, destinationEmail, destinationSlack) {
+  const trackDb = cloudant.use(dbName)
+  const accessEmail = await useCode(code)
+  const subscription = await trackDb.get(id)
+
+  if (subscription && subscription.email === accessEmail) {
+    subscription.destinationEmail = destinationEmail
+    subscription.destinationSlack = destinationSlack
+
     await trackDb.insert(subscription)
   } else {
     throw new Error('No subscription by that id')

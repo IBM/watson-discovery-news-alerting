@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Grid, Row, Col } from 'react-bootstrap'
 import { Route, Switch } from 'react-router-dom'
-import { Header, Footer, Icon } from 'watson-react-components/dist/components'
+import { Header, Footer, Icon, ButtonsGroup } from 'watson-react-components/dist/components'
 import PropTypes from 'prop-types'
 import 'whatwg-fetch'
 
@@ -14,11 +14,15 @@ export class Subscription extends Component {
       loading: false,
       subscription: props.subscription,
       unsubscribed: false,
+      updatingSlack: false,
+      updatingEmail: false,
       token: props.token
     }
 
     this.unsubscribe = this.unsubscribe.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
+    this.handleDestinationChange = this.handleDestinationChange.bind(this)
+    this.changeDeliveryMethods = this.changeDeliveryMethods.bind(this)
   }
 
   unsubscribe() {
@@ -46,7 +50,58 @@ export class Subscription extends Component {
       })
   }
 
-  handleSubmit(e) {
+  changeDeliveryMethods(email, slack) {
+    const token = this.state.token
+    const id = this.state.subscription._id
+    const updatedSubscription = this.state.subscription
+
+    if (email) {
+      updatedSubscription.destinationEmail = ! updatedSubscription.destinationEmail
+      this.setState({updatingEmail: true})
+    }
+
+    if (slack) {
+      updatedSubscription.destinationSlack = ! updatedSubscription.destinationSlack
+      this.setState({updatingSlack: true})
+    }
+    this.setState({subscription: updatedSubscription})
+
+    const params = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        destinationSlack: updatedSubscription.destinationSlack,
+        destinationEmail: updatedSubscription.destinationEmail
+      })
+    }
+    fetch(`/api/1/subscription/${token}/destination/${id}/`, params)
+      .then(() => {
+        if (email) {
+          this.setState({updatingEmail: false})
+        }
+
+        if (slack) {
+          this.setState({updatingSlack: false})
+        }
+      })
+      .catch((error) => {
+        this.setState({error: true})
+        console.error(error)
+      })
+  }
+
+  handleDestinationChange(e) {
+    const value = e.target.value
+
+    const updatingSlack = value === 'slack'
+    const updatingEmail = value === 'email'
+
+    this.changeDeliveryMethods(updatingEmail, updatingSlack)
+  }
+
+  handleUnsubscribe(e) {
     e.preventDefault()
 
     this.unsubscribe()
@@ -62,7 +117,30 @@ export class Subscription extends Component {
           <span>{this.state.subscription.frequency}</span>
         </td>
         <td>
-          <button disabled={this.state.loading || this.state.unsubscribed} onClick={this.handleSubmit}>{this.state.loading ? (<span><Icon type="loader" size="small" />loading...</span>) : (this.state.unsubscribed ? (<span>unsubscribed</span>) : (<span>unsubscribe</span>))}</button>
+          <ButtonsGroup
+            type='checkbox'
+            name='destination'
+            onChange={this.handleDestinationChange}
+            buttons={
+              [
+                {
+                  value: 'slack',
+                  id: `slack-${this.state.subscription._id}`,
+                  text: this.state.updatingSlack ? 'Saving' : 'Slack',
+                  selected: this.state.subscription.destinationSlack
+                },
+                {
+                  value: 'email',
+                  id: `email-${this.state.subscription._id}`,
+                  text: this.state.updatingEmail ? 'Saving' : 'Email',
+                  selected: this.state.subscription.destinationEmail
+                }
+              ]
+            }
+          />
+        </td>
+        <td>
+          <button disabled={this.state.loading || this.state.unsubscribed} onClick={this.handleUnsubscribe}>{this.state.loading ? (<span><Icon type="loader" size="small" />loading...</span>) : (this.state.unsubscribed ? (<span>unsubscribed</span>) : (<span>unsubscribe</span>))}</button>
         </td>
       </tr>
     )
@@ -134,15 +212,16 @@ export class SubscriptionList extends Component {
           <tr>
             <th>Alert Type</th>
             <th>Frequency</th>
+            <th>Destination</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {(this.state.subscriptions && this.state.subscriptions.lengh > 0) ? this.state.subscriptions.map((subscription, i) =>
+          {(this.state.subscriptions && this.state.subscriptions.length > 0) ? this.state.subscriptions.map((subscription, i) =>
             <Subscription subscription={subscription} token={this.state.token} key={i} />
             ) : (
               <tr>
-                <td colSpan={3}>You&rquot;re currently not subscribed to any alerts, <a href='/' title='add some'>subscribe to some.</a></td>
+                <td colSpan={4}>You&rsquo;re currently not subscribed to any alerts, <a href='/' title='add some'>subscribe to some.</a></td>
               </tr>
             )}
         </tbody>

@@ -4,7 +4,7 @@ import morgan from 'morgan'
 import path from 'path'
 
 import { getNewsAlert, getEventAlert } from './src/watson/discovery'
-import { track, subscriptionsByEmail, unsubscribe } from './src/models/track'
+import { track, subscriptionsByEmail, unsubscribe, updateDestination } from './src/models/track'
 import { useCode } from './src/models/access'
 
 const app = express()
@@ -18,7 +18,7 @@ app.listen(port, () => console.log(`Listening on port ${port}.`) )
 
 function genericError(res, error) {
   console.error(error)
-  res.status(500).json({'status': 'error'})
+  res.status(500).json({status: 'error'})
 }
 
 app.get('/api/1/news-alerts', (req, res) => {
@@ -67,8 +67,27 @@ app.post('/api/1/subscription/:token/unsubscribe/:id/', (req, res) => {
     throw new TypeError('Invalid ID provided.')
   }
 
-  unsubscribe(id)
-    .then(() => res.json({'status': 'success'}))
+  unsubscribe(token, id)
+    .then(() => res.json({status: 'success'}))
+    .catch((error) => genericError(res, error))
+})
+
+app.post('/api/1/subscription/:token/destination/:id/', (req, res) => {
+  const token = req.params.token
+  const id = req.params.id
+
+  const destinationEmail = req.body.destinationEmail
+  const destinationSlack = req.body.destinationSlack
+
+  if (!token || token.search(/[^\w\-]/) != -1) {
+    throw new TypeError('Invalid token provided.')
+  }
+  if (!id || id.search(/[^\w\-]/) != -1) {
+    throw new TypeError('Invalid ID provided.')
+  }
+
+  updateDestination(token, id, destinationEmail, destinationSlack)
+    .then(() => res.json({status: 'success'}))
     .catch((error) => genericError(res, error))
 })
 
