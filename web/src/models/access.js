@@ -9,9 +9,10 @@ const credentials = getCredentials('cloudantNoSQLDB')
 const cloudant = Cloudant({
   account: credentials.username,
   password: credentials.password,
-  plugin: 'promises'
+  plugin: 'promises'  // Using the promises plugin to allow use of async/await
 })
 
+// Create the access database (storing codes/tokens) and establishing its indexes
 export async function createAccessDb() {
   const dbs = await cloudant.db.list()
   if (dbs.includes(dbName)) {
@@ -22,6 +23,7 @@ export async function createAccessDb() {
   }
   const accessDb = cloudant.db.use(dbName)
 
+  // Index corresponds to the search which includes (where not used and expiresAt < now)
   await accessDb.index({
     name: 'oneTimePassword',
     type: 'json',
@@ -39,6 +41,7 @@ export async function createAccessDb() {
 export async function createCode(email) {
   const accessDb = cloudant.db.use(dbName)
 
+  // The code's _id becomes the secret shared to the front-end
   const code = await accessDb.insert({
       used: false,
       email: email,

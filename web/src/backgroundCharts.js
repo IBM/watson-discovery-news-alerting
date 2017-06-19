@@ -3,6 +3,10 @@ import GIFEncoder from 'gifencoder'
 import pngFileStream from 'png-file-stream'
 import fs from 'fs'
 
+// This logic is currently disabled and left in an unfunctioning state. This would generate a gif of any page fully rendered to be
+// sent via email or Slack.
+//
+// Commonly used to generate a gif of the chart displayed on the results page searching for alerts.
 const width = 600
 const height = 325
 const encoder = new GIFEncoder(width, height)

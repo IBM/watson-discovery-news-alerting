@@ -10,4 +10,6 @@ ReactDOM.render(
   <BrowserRouter>
     <App />
   </BrowserRouter>, document.getElementById('root'))
-registerServiceWorker();
+
+// Service worker used to allow the pages to work in ~offline mode
+registerServiceWorker()

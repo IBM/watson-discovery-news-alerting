@@ -1,5 +1,6 @@
 import cfenv from 'cfenv'
 
+// Wrapper to get the service by label (Cloudant or Discovery) to avoid duplicating this logic in multiple places
 export function getCredentials(requestedService) {
   const appEnv = cfenv.getAppEnv()
 

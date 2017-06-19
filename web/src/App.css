@@ -14,11 +14,31 @@ label[for="emailAddress"], label[htmlFor="emailAddress"] {
   text-align: center;
 }
 
+.input-inherit {
+  position: inherit !important;
+  left: inherit !important;
+  margin-left: 0px !important;
+  top: inherit !important;
+}
+
 li::before {
   content: "" !important;
   content: none !important;
 }
 
+.example {
+  min-height: 250px;
+}
+
+.container {
+  min-height: 400px;
+}
+
 .extra-right-space {
   margin-right: 0.5em;
+}
+
+.col-md-2, .col-md-3, .col-md-4 {
+  margin-top: 0px;
+  margin-bottom: 10px;
 }

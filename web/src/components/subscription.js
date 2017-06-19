@@ -5,6 +5,7 @@ import { Header, Footer, Icon, ButtonsGroup } from 'watson-react-components/dist
 import PropTypes from 'prop-types'
 import 'whatwg-fetch'
 
+// Single subscription row in the list of all subscriptions tied to a user
 export class Subscription extends Component {
   constructor(props) {
     super(props)
@@ -29,7 +30,7 @@ export class Subscription extends Component {
     this.setState({loading: true})
 
     const token = this.state.token
-    const id = this.state.subscription._id
+    const id = this.state.subscription._id  // _id is the ID set in Cloudant
 
     const params = {
       method: 'POST',
@@ -40,6 +41,7 @@ export class Subscription extends Component {
 
     fetch(`/api/1/subscription/${token}/unsubscribe/${id}/`, params)
       .then(() => {
+        // There's no need to check the response although it could return the subscription in case you want to display further information
         this.setState({
           loading: false,
           unsubscribed: true})
@@ -50,9 +52,12 @@ export class Subscription extends Component {
       })
   }
 
+  // This one is a bit confusing, it's done this way to be easier to handle changing subscription of Email and Slack separately but
+  // using the same code path (or both).
   changeDeliveryMethods(email, slack) {
     const token = this.state.token
     const id = this.state.subscription._id
+    // Avoiding editing the subscription directly and instead using a reference to it and resetting the state after
     const updatedSubscription = this.state.subscription
 
     if (email) {
@@ -64,6 +69,8 @@ export class Subscription extends Component {
       updatedSubscription.destinationSlack = ! updatedSubscription.destinationSlack
       this.setState({updatingSlack: true})
     }
+    // Forcing the state to use the updatedSubscription to make certain that it displays correctly and there isn't any confusion in
+    // state properties.
     this.setState({subscription: updatedSubscription})
 
     const params = {
@@ -102,6 +109,7 @@ export class Subscription extends Component {
   }
 
   handleUnsubscribe(e) {
+    // Avoid the button click changing pages or refreshing on some browsers
     e.preventDefault()
 
     this.unsubscribe()
@@ -112,6 +120,9 @@ export class Subscription extends Component {
       <tr>
         <td>
           <span>{this.state.subscription.query}</span>
+        </td>
+        <td>
+          <span>{this.state.subscription.keyword}</span>
         </td>
         <td>
           <span>{this.state.subscription.frequency}</span>
@@ -191,10 +202,10 @@ export class SubscriptionList extends Component {
       })
   }
 
+  // Get a list of subscriptions the moment this page first loads
   componentDidMount() {
     this.getSubscriptions()
   }
-
 
   renderLoader() {
     return (
@@ -211,6 +222,7 @@ export class SubscriptionList extends Component {
         <thead>
           <tr>
             <th>Alert Type</th>
+            <th>Alert Keyword</th>
             <th>Frequency</th>
             <th>Destination</th>
             <th></th>
@@ -221,7 +233,7 @@ export class SubscriptionList extends Component {
             <Subscription subscription={subscription} token={this.state.token} key={i} />
             ) : (
               <tr>
-                <td colSpan={4}>You&rsquo;re currently not subscribed to any alerts, <a href='/' title='add some'>subscribe to some.</a></td>
+                <td colSpan={5}>You&rsquo;re currently not subscribed to any alerts, <a href='/' title='add some'>subscribe to some.</a></td>
               </tr>
             )}
         </tbody>
@@ -243,6 +255,8 @@ SubscriptionList.propTypes = {
   match: PropTypes.object.isRequired
 }
 
+// The main layout of the subscription page, the reason to not use a single layout for all pages is due to logic which renders certain
+// pages into a gif to be included in Email and Slack. This logic may not be used and so could be refactored.
 export class CurrentSubscriptions extends Component {
   constructor(props) {
     super(props)

@@ -9,8 +9,11 @@ import { CurrentSubscriptions } from './components/subscription'
 
 import './App.css'
 import 'watson-react-components/dist/css/watson-react-components.min.css'
+
+// Important, used to allow URLSearchparams to work across browsers
 import 'url-search-params-polyfill'
 
+// Primary homepage
 const Home = () => (
   <div>
     <Header
@@ -19,13 +22,12 @@ const Home = () => (
       hasWordmark={true} />
     <Jumbotron
       serviceName='Discovery News Alerting'
-      repository='https://github.com/watson-developer-cloud/TODO'
-      documentation='https://www.ibm.com/watson/developercloud/TODO'
-      apiReference='https://www.ibm.com/watson/developercloud/TODO'
-      startInBluemix='TODOhttps://console.ng.bluemix.net/registration/?target=/catalog/services/visual-recognition/'
+      repository='https://github.com/eerwitt/discovery-news'
+      documentation='https://www.ibm.com/watson/developercloud/doc/discovery/index.html'
+      apiReference='https://www.ibm.com/watson/developercloud/discovery/api/v1/'
+      startInBluemix='https://bluemix.net/deploy?repository=https://github.com/eerwitt/discovery-news'
       version='Beta'
-      serviceIcon='images/service-icon.svg'
-      description="TODO: Integrate Watson's Discovery News Service into existing workflows using a Slack application and periodic push updates."
+      description="Monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Receive periodic updates via email or Slack related to a product or brand and how they're perceived in the News."
     />
     <Grid>
       <ExampleList />
@@ -37,7 +39,7 @@ const Home = () => (
 const App = () => (
   <Switch>
     <Route exact path='/' component={Home} />
-    <Route path='/example' component={Example} />
+    <Route path='/track' component={Example} />
     <Route path='/subscription' component={CurrentSubscriptions} />
   </Switch>
 )

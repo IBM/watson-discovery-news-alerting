@@ -1,136 +1,135 @@
-# TODO Title [![Build Status](https://travis-ci.org/watson-developer-cloud/TODO.svg?branch=master)](http://travis-ci.org/watson-developer-cloud/TODO) [![codecov](https://codecov.io/gh/watson-developer-cloud/TODO/branch/master/graph/badge.svg)](https://codecov.io/gh/watson-developer-cloud/TODO)
+# Watson Discovery News Alerting [![Build Status](https://travis-ci.org/eerwitt/discovery-news.svg?branch=master)](https://travis-ci.org/eerwitt/discovery-news)
 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/eerwitt/discovery-news)
 
-  The IBM Watson&trade; TODO
+In this developer journey we built an application which integrates with Watson Discovery Service's example news collection to push updates via email or Slack for different tasks common to many brand managers.
 
+The journey highlights the steps required to build a front-end management interface to search Watson and a back-end service which periodically sends updates out related to customizable queries.
 
-## Getting started
+# General Project Layout
 
-1. You need a Bluemix account. If you don't have one, [sign up][sign_up]. Experimental Watson Services are free to use.
+The server which hosts the React web application, acts as an API to Watson, and communicates with the Slack App can be found at:
 
-1. Download and install the [Cloud-foundry CLI][cloud_foundry] tool if you haven't already.
-
-1. Edit the `manifest.yml` file and change `<application-name>` to something unique. The name you use determines the URL of your application. For example, `<application-name>.mybluemix.net`.
-
-  ```yaml
-  applications:
-  - services:
-    - my-service-instance
-    name: <application-name>
-    command: npm start
-    path: .
-    memory: 128M
-  ```
-
-1. Connect to Bluemix with the command line tool.
-
-  ```sh
-  cf api https://api.ng.bluemix.net
-  cf login
-  ```
-
-1. Create and retrieve service keys to access the [TODO][service_url] service:
-
-  ```none
-  cf create-service TODO standard my-ta-service
-  cf create-service-key my-ta-service myKey
-  cf service-key my-ta-service myKey
-  ```
-
-1. Create a `.env` file in the root directory by copying the sample `.env.example` file using the following command:
-
-  ```none
-  cp .env.example .env
-  ```
-  You will update the `.env` with the information you retrieved in steps 5 and 6
-
-  The `.env` file will look something like the following:
-
-  ```none
-  TODO
-  TODO
-  TODO
-  ```
-
-1. Install the dependencies you application need:
-
-  ```none
-  yarn install
-  ```
-
-1. Start the application locally:
-
-  ```none
-  yarn start
-  ```
-
-1. Point your browser to [http://localhost:3000](http://localhost:3000).
-
-1. **Optional:** Push the application to Bluemix:
-
-  ```none
-  cf push
-  ```
-
-After completing the steps above, you are ready to test your application. Start a browser and enter the URL of your application.
-
-            <your application name>.mybluemix.net
-
-
-For more details about developing applications that use Watson Developer Cloud services in Bluemix, see [Getting started with Watson Developer Cloud and Bluemix][getting_started].
-
-
-## Troubleshooting
-
-* The main source of troubleshooting and recovery information is the Bluemix log. To view the log, run the following command:
-
-  ```sh
-  cf logs <application-name> --recent
-  ```
-
-* For more details about the service, see the [documentation][docs] for the Tone Analyzer Service.
-
-
-----
-
-### Directory structure
-
-```none
-TODO
-.
-├── web
-|   ├── server-api.js           // express routes
+```
+./web/server.js
 ```
 
-## License
+The server which periodically emails news alerts to subscribed users can be found at:
 
-  This sample code is licensed under Apache 2.0.
+```
+./tracker/worker.js
+```
 
-## Contributing
+![Architecture Diagram](https://raw.githubusercontent.com/eerwitt/watson-discovery/master/docs/architecture.png)
 
-  See [CONTRIBUTING](CONTRIBUTING.md).
+# Included components
 
-## Open Source @ IBM
-  Find more open source projects on the [IBM Github Page](http://ibm.github.io/)
+* [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html) - Rapidly build a cognitive search and content analytics engine
+* [Cloudant Database](https://cloudant.com/) - Cloudant is the distributed database as a service (DBaaS) built from the ground up to deliver fast-growing application data to the edge.
 
-## Privacy Notice
+# Featured technologies
 
-Sample web applications that include this package may be configured to track deployments to [IBM Bluemix](https://www.bluemix.net/) and other Cloud Foundry platforms. The following information is sent to a [Deployment Tracker](https://github.com/IBM-Bluemix/cf-deployment-tracker-service) service on each deployment:
+* [Node.js](https://nodejs.org/en/) - An asynchronous event driven JavaScript runtime, designed to build scalable applications
+* [Slack](https://slack.com) - Slack is a cloud-based set of team collaboration tools and services with chat bot integration
+* [React](https://facebook.github.io/react/) - JavaScript library for building User Interfaces
+* [express](https://expressjs.com) - Most popular and minimalistic web framework for creating API and Web server
+* [yarn](https://yarnpkg.com) - Fast, reliable and secure dependency manager for node.js
 
-* Node.js package version
-* Node.js repository URL
-* Application Name (`application_name`)
-* Space ID (`space_id`)
-* Application Version (`application_version`)
-* Application URIs (`application_uris`)
-* Labels of bound services
-* Number of instances for each bound service and associated plan information
+# Getting Started
 
-This data is collected from the `package.json` file in the sample application and the `VCAP_APPLICATION` and `VCAP_SERVICES` environment variables in IBM Bluemix and other Cloud Foundry platforms. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples, so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
+## Prerequisites
 
-[deploy_track_url]: https://github.com/cloudant-labs/deployment-tracker
-[cloud_foundry]: https://github.com/cloudfoundry/cli
-[getting_started]: https://www.ibm.com/watson/developercloud/doc/getting_started/
-[docs]: http://www.ibm.com/watson/developercloud/TODO
-[sign_up]: https://console.ng.bluemix.net/registration/
-[service_url]: http://www.ibm.com/watson/developercloud/TODO
+Make sure before you start you have the following tasks done:
+
+1. Install [nodejs](https://nodejs.org/en/) and [yarn](https://yarnpkg.com)
+2. Install the [Bluemix CLI](https://console.bluemix.net/docs/cli/index.html) tool
+3. Have a [Bluemix account](https://console.ng.bluemix.net/registration/)
+
+
+## Steps
+
+### 1. Clone the repo
+
+[Clone this repository](https://help.github.com/articles/cloning-a-repository/) to a directory on your local system and go into that directory.
+
+### 2. Install the dependencies and bootstrap
+
+Install all of the dependencies by running `yarn` command separately for the web and tracker applications. This will install all of the node modules specified in the package.json
+
+```sh
+$ cd web
+$ yarn
+```
+
+Change back to the directory this project was cloned to, then run:
+
+```sh
+$ cd tracker
+$ yarn
+```
+
+### 3. Create Bluemix Services
+
+Create the following services, note that these links will by default start the service in the Bluemix `us-south` region:
+
+* [Watson Discovery](https://console.ng.bluemix.net/catalog/services/discovery?env_id=ibm:yp:us-south)
+* [Cloudant Database](https://console.bluemix.net/catalog/services/cloudant-nosql-db?env_id=ibm:yp:us-south)
+
+### 6. Starting the Services
+
+Start the app by running `yarn start`.
+
+```sh
+$ cd web
+$ yarn run build
+$ yarn start
+```
+
+Open the browser and go to `http://localhost:4391`
+
+### 7. Deploy to Bluemix
+
+To deploy to Bluemix make sure you have Bluemix CLI tool installed. Then run the following commands to connect it with Bluemix and login with your Bluemix credentials.
+
+```sh
+$ bluemix login
+```
+
+Then to deploy just run the following command and it will push the code, deploy it to a server and run it.
+
+```sh
+$ bluemix cf push
+```
+
+Go to the URL that is printed at the end after deployment is done and you can view the app.
+
+# Architecture
+
+## Back-end Server
+
+Handles hosting of the static assets (React front-end application) and manages a thin API used by both the front-end application and the Slack application.
+
+## Front-end Application
+
+Displays results from querying the Watson Discovery Service API and manages subscriptions for push updates.
+
+## Slack Application
+
+Manages and receives push updates from the worker application.
+
+## Worker Application
+
+Background process which periodically sends updates to Slack and or email.
+
+## Useful Links
+
+### Bot
+* https://dashboard.ngrok.com/get-started
+* https://api.slack.com/docs/message-menus
+* https://api.slack.com/interactive-messages
+* http://phantomjs.org/quick-start.html
+* https://github.com/eugeneware/gifencoder
+* http://amirraminfar.com/phantomjs-node/
+* https://www.ibm.com/watson/developercloud/doc/discovery/building.html#understanding-the-difference-between-entities-concepts-and-keywords
+* https://github.com/ibm/watson-online-store
+* https://github.com/watson-developer-cloud/node-sdk

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { TextInput, Alert, Icon, ArrowBox, Colors } from 'watson-react-components/dist/components'
 import 'whatwg-fetch'
 
+// Logic to signup for email tracking from the website, this  isn't used by the Slack app
 export class Tracking extends Component {
   constructor(props) {
     super(props)
@@ -15,7 +16,8 @@ export class Tracking extends Component {
       emailInvalid: null,
       email: null,
       frequency: 'daily',
-      query: props.query
+      query: props.query,
+      keyword: props.keyword
     }
 
     this.createTracking = this.createTracking.bind(this)
@@ -34,10 +36,11 @@ export class Tracking extends Component {
       body: JSON.stringify({
         email: this.state.email,
         query: this.state.query,
+        keyword: this.state.keyword,
         frequency: this.state.frequency
       })
     }
-    fetch('/api/1/tracking', params)
+    fetch('/api/1/subscription/', params)
       .then((res) => res.json())
       .then(() => {
         this.setState({tracking: true})
@@ -56,6 +59,7 @@ export class Tracking extends Component {
 
     // This is the RFC 5322 email regex from http://emailregex.com/
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    // This won't check if the email can actually receive emails though
     if (value && value.match(emailRegex)) {
       this.setState({emailValid: true, emailInvalid: false})
     }
@@ -145,5 +149,6 @@ export class Tracking extends Component {
   }
 }
 Tracking.propTypes = {
-  query: PropTypes.string.isRequired
+  query: PropTypes.string.isRequired,
+  keyword: PropTypes.string.isRequired
 }
