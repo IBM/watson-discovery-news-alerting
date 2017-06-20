@@ -1,12 +1,161 @@
-// These are the different messages available to Slack, all details were pulled from Slack's documentation on attachments
+import uuid from 'uuid'
+
+import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from '../watson/constants'
+
+// This is a tricky bit and wouldn't work if this app needed to have a cluster of servers running. This is an in memory store of the current message being displayed in Slack. The reason for this is to allow super fast responses to Slack (remember, max 3s response including transit) but in a production environment, it requires further thought and likely a cache system backed by a persistent DB.
+class ActiveMessages {
+  constructor() {
+    this.messages = {}
+  }
+
+  addMessage(message) {
+    const uniqueKey = message.getUniqueKey()
+    this.messages[uniqueKey] = message
+  }
+
+  getMessage(uniqueKey) {
+    return this.messages[uniqueKey]
+  }
+}
+
+// We expect the internal state of this object to change often but it should stay constant.
+const GlobalActiveMessages = new ActiveMessages()
+
+export function registerMessage(message) {
+  GlobalActiveMessages.addMessage(message)
+}
+
+/*
+ * The slackBody should be of this format (Notice, double encoded payload):
+{ payload: '{"actions":[{"name":"alert_type","type":"select","selected_options":[{"value":"brand-alerts"}]}],"callback_id":"select_filter","team":{"id":"T5K7VK8F7","domain":"ibm-testhq"},"channel":{"id":"D5L0N7CVD","name":"directmessage"},"user":{"id":"U5JEUQF5W","name":"e3"},"action_ts":"1497982018.022452","message_ts":"1497981821.000007","attachment_id":"1","token":"IyE2ob8d364KIi2hLp0PQgGR","is_app_unfurl":false,"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T5K7VK8F7\\/200790698708\\/bubfLwatxvLT4pzgdMzlcj46"}' }
+ */
+export function registerButtonClick(slackBody) {
+  const payload = JSON.parse(slackBody.payload)
+  const callbackId = payload.callback_id
+  const currentMessage = GlobalActiveMessages.getMessage(callbackId)
+
+  for (const action of payload.actions) {
+    if (action.name === 'alert_type') {
+      const alertType = action.selected_options[0].value
+      currentMessage.updateAlert(alertType)
+    }
+
+    if (action.name === 'filter_list') {
+      const keyword = action.selected_options[0].value
+      currentMessage.updateKeyword(keyword)
+    }
+
+    if (action.name === 'frequency') {
+      const frequency = action.selected_options[0].value
+      currentMessage.updateFrequency(frequency)
+    }
+
+    // This button cancels the entire flow, return back a static message to clear the displayed one
+    if (action.name === 'cancel') {
+      return new MainMessage(null, null, null, null, false, false, {text: 'Cancelled'})
+    }
+
+    // The track button stops the flow and responds with a tracking text as feedback
+    if (action.name === 'track') {
+      currentMessage.isTracking = true
+    }
+  }
+
+  if (currentMessage.shouldFrequency()) {
+    currentMessage.enableFrequency()
+  }
+
+  if (currentMessage.shouldSearch()) {
+    currentMessage.enableTrackButton()
+  }
+
+  return currentMessage
+}
+
+// These are the different messages available to Slack, all details were pulled from Slack's documentation on attachments: https://api.slack.com/docs/message-attachments
 export default class MainMessage {
-  static toSlack(alertType, keyword) {
-    const response = {
+  constructor(callbackId, query, keyword, frequency, hasResults, isTracking, body) {
+    this.callbackId = callbackId || uuid.v4()
+
+    this.query = query
+    this.keyword = keyword
+    this.frequency = frequency
+    this.isTracking = isTracking || false
+    this.hasResults = hasResults || true
+
+    if (body) {
+      this.body = body
+    } else {
+      this.setInitialBody()
+    }
+  }
+
+  // Communicating to web workers requires JSON or string data types, this allows us to serialize/deserialize these objects between the main process and other threads.
+  asJSON() {
+    return {
+      callbackId: this.callbackId,
+      query: this.query,
+      keyword: this.keyword,
+      frequency: this.frequency,
+      hasResults: this.hasResults,
+      isTracking: this.isTracking,
+      body: this.body
+    }
+  }
+
+  static fromJSON(messageJSON) {
+    return new MainMessage(
+      messageJSON.callbackId,
+      messageJSON.query,
+      messageJSON.keyword,
+      messageJSON.frequency,
+      messageJSON.hasResults,
+      messageJSON.isTracking,
+      messageJSON.body)
+  }
+
+  // The callbackId is unique and used to support mapping button clicks back to the proper message that should be updated. Without it, there's no way to find which message should be updated.
+  getUniqueKey() {
+    return this.callbackId
+  }
+
+  shouldSearch() {
+    return this.query && this.keyword && this.frequency && this.hasResults
+  }
+
+  shouldSaveTracking() {
+    return this.isTracking
+  }
+
+  shouldFrequency() {
+    return this.query && this.keyword && this.hasResults
+  }
+
+  updateSearchResults(results) {
+    for (const result of results) {
+      this.body.attachments.push({
+        title: result.title,
+        title_link: result.title_link,
+        color: '9855d4',
+        fallback: result.title,
+        fields: [
+          {
+            title: 'News Article',
+            value: result.details,
+            short: false
+          }
+        ]
+      })
+    }
+  }
+
+  setInitialBody() {
+    this.body = {
       attachments: [
         {
           title: 'Watson Discover News Tracking',
           title_link: process.env.BASE_URL,
-          footer: 'IBM',
+          footer: '',
           footer_icon: '',
           color: '9855d4',
           fallback: 'Watson Discovery News Tracking',
@@ -17,9 +166,8 @@ export default class MainMessage {
               short: false
             }
           ],
-          image_url: `${process.env.BASE_URL}/images/example-render.gif`,
           attachment_type: 'default',
-          callback_id: 'select_filter',
+          callback_id: this.callbackId,  // This is how we keep track of the unique message being interacted with
           actions: [
             {
               name: 'alert_type',
@@ -28,19 +176,23 @@ export default class MainMessage {
               options: [
                 {
                   text: 'Brand Alerts',
-                  value: 'brand-alerts'
+                  value: BRAND_ALERTS
                 },
                 {
                   text: 'Product Alerts',
-                  value: 'product-alerts'
+                  value: PRODUCT_ALERTS
                 },
                 {
                   text: 'Related Brands',
-                  value: 'related-brands'
+                  value: RELATED_BRANDS
                 },
                 {
                   text: 'Positive Product Alerts',
-                  value: 'positive-product-alerts'
+                  value: POSITIVE_PRODUCT_ALERTS
+                },
+                {
+                  text: 'Stock Alerts',
+                  value: STOCK_ALERTS
                 }
               ]
             },
@@ -51,56 +203,90 @@ export default class MainMessage {
               data_source: 'external',
               min_query_length: 1
             },
-            {
-              name: 'frequency',
-              text: 'Frequency of updates',
-              type: 'select',
-              options: [
-                {
-                  text: 'Daily',
-                  value: 'daily'
-                },
-                {
-                  text: 'Weekly',
-                  value: 'weekly'
-                },
-                {
-                  text: 'Monthly',
-                  value: 'monthly'
-                }
-              ]
-            },
-            {
-              name: 'track',
-              text: 'Track',
-              style: 'primary',
-              type: 'button',
-              value: 'track'
-            }
           ]
         }
       ]
     }
+  }
 
-    if (alertType) {
-      response.attachments[0].actions = response.attachments[0].actions.filter((action) => action.name !== 'alert_type')
-      response.attachments[0].fields.push({
-        title: 'Alert type',
-        value: alertType,
-        short: true
+  enableTrackButton() {
+    if (!this.body.attachments[0].actions.some((e) => e.name === 'cancel')) {
+      this.body.attachments[0].actions.push({
+        name: 'cancel',
+        text: 'Cancel',
+        style: 'danger',
+        type: 'button',
+        value: 'cancel'
       })
     }
 
-    if (keyword) {
-      response.attachments[0].actions = response.attachments[0].actions.filter((action) => action.name !== 'filter_list')
-      response.attachments[0].fields.push({
-        title: 'Keyword',
-        value: keyword,
-        short: true
+    if (!this.body.attachments[0].actions.some((e) => e.name === 'track')) {
+      this.body.attachments[0].actions.push({
+        name: 'track',
+        text: 'Track',
+        style: 'primary',
+        type: 'button',
+        value: 'track'
       })
     }
+  }
 
-    return response
+  enableFrequency() {
+    if (!this.body.attachments[0].actions.some((e) => e.name === 'frequency') && !this.body.attachments[0].fields.some((e) => e.title === 'Frequency')) {
+      this.body.attachments[0].actions.push({
+          name: 'frequency',
+          text: 'Frequency of updates',
+          type: 'select',
+          options: [
+            {
+              text: 'Daily',
+              value: 'daily'
+            },
+            {
+              text: 'Weekly',
+              value: 'weekly'
+            },
+            {
+              text: 'Monthly',
+              value: 'monthly'
+            }
+          ]
+        })
+    }
+  }
+
+  updateAlert(alertType) {
+    this.query = alertType
+    this.body.attachments[0].actions = this.body.attachments[0].actions.filter((action) => action.name !== 'alert_type')
+    this.body.attachments[0].fields.push({
+      title: 'Alert type',
+      value: alertType,
+      short: true
+    })
+  }
+
+  updateKeyword(keyword) {
+    this.keyword = keyword
+    this.body.attachments[0].actions = this.body.attachments[0].actions.filter((action) => action.name !== 'filter_list')
+    this.body.attachments[0].fields.push({
+      title: 'Keyword',
+      value: keyword,
+      short: true
+    })
+  }
+
+  updateFrequency(frequency) {
+    this.frequency = frequency
+    this.body.attachments[0].actions = this.body.attachments[0].actions.filter((action) => action.name !== 'frequency')
+    this.body.attachments[0].fields.push({
+      title: 'Frequency',
+      value: frequency,
+      short: true
+    })
+  }
+
+  toSlack() {
+    return this.body
   }
 }
 
