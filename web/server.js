@@ -3,11 +3,12 @@ import express from 'express'
 import morgan from 'morgan'
 import path from 'path'
 
-import { getBrandAlerts, getProductAlerts, getRelatedBrands, getPositiveProductAlerts } from './src/watson/discovery'
+import { getBrandAlerts, getProductAlerts, getRelatedBrands, getPositiveProductAlerts, getStockAlerts } from './src/watson/discovery'
 import { track, subscriptionsByEmail, unsubscribe, updateDestination } from './src/models/track'
 import { useCode } from './src/models/access'
 import MainMessage, { Options } from './src/slack/message'
 import { respond } from './src/slack/actions'
+import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './src/watson/constants'
 
 const app = express()
 const port = process.env.PORT || 4391
@@ -71,30 +72,37 @@ app.post('/api/1/slack/command/', (req, res) => {
 //
 // These could be reduced to a single route which uses a path parameter to see which function to execute (see mailer),
 // instead these routes are written out for extra clarity.
-app.get('/api/1/track/brand-alerts/', (req, res) => {
+app.get(`/api/1/track/${BRAND_ALERTS}/`, (req, res) => {
   const brandName = req.query.brand_name
   getBrandAlerts(brandName)
     .then((response) => res.json(response))
     .catch((error) => genericError(res, error))
 })
 
-app.get('/api/1/track/product-alerts/', (req, res) => {
+app.get(`/api/1/track/${PRODUCT_ALERTS}/`, (req, res) => {
   const productName = req.query.product_name
   getProductAlerts(productName)
     .then((response) => res.json(response))
     .catch((error) => genericError(res, error))
 })
 
-app.get('/api/1/track/related-brands/', (req, res) => {
+app.get(`/api/1/track/${RELATED_BRANDS}/`, (req, res) => {
   const brandName = req.query.brand_name
   getRelatedBrands(brandName)
     .then((response) => res.json(response))
     .catch((error) => genericError(res, error))
 })
 
-app.get('/api/1/track/positive-product-alerts/', (req, res) => {
+app.get(`/api/1/track/${POSITIVE_PRODUCT_ALERTS}/`, (req, res) => {
   const productName = req.query.product_name
   getPositiveProductAlerts(productName)
+    .then((response) => res.json(response))
+    .catch((error) => genericError(res, error))
+})
+
+app.get(`/api/1/track/${STOCK_ALERTS}/`, (req, res) => {
+  const stockSymbol = req.query.stock_symbol
+  getStockAlerts(stockSymbol)
     .then((response) => res.json(response))
     .catch((error) => genericError(res, error))
 })

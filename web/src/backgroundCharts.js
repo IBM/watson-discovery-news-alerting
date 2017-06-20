@@ -3,6 +3,11 @@ import GIFEncoder from 'gifencoder'
 import pngFileStream from 'png-file-stream'
 import fs from 'fs'
 
+// If you want to use this logic, you'll need to add back a few modules to yarn
+// phantom
+// png-file-stream
+// gifencoder
+
 // This logic is currently disabled and left in an unfunctioning state. This would generate a gif of any page fully rendered to be
 // sent via email or Slack.
 //

@@ -15,9 +15,3 @@ applications:
   services:
   - cloudantNoSQLDB
   - discovery
-- name: eee-tracker
-  path: ./tracker
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
-  services:
-  - cloudantNoSQLDB
-  - discovery

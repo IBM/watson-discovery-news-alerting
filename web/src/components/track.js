@@ -5,9 +5,7 @@ import { Row, Col } from 'react-bootstrap'
 import { InputWithButton, Icon, Alert, JsonLinkInline } from 'watson-react-components/dist/components'
 import { Tracking } from './tracking'
 
-// Important, used to allow URLSearchparams to work across browsers
-import 'url-search-params-polyfill'
-import 'whatwg-fetch'
+import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from '../watson/constants'
 
 // Taken from https://github.com/github/fetch/issues/256
 function toQueryString(params) {
@@ -78,7 +76,6 @@ class AlertExample extends Component {
       params: new URLSearchParams(props.location.search),  // In this version of React Router, it doesn't parse QSP
       error: false,
       loading: false,
-      empty: true,  // This flags triggers if the results are displayed or a search box
       exampleResponse: null,
       showExampleAggregationResponse: false,
       showExampleResultResponse: false,
@@ -207,7 +204,8 @@ class AlertExample extends Component {
           <Tracking query={this.state.query} keyword={this.state.keyword}  />
         </div>
       )
-    } else if(this.state.empty) {
+    } else if(this.state.keyword === null || typeof this.state.keyword === 'undefined' || this.state.keyword === '') {
+      // This is primarily to avoid using == to check the keyword == null
       return this.renderSearchBox()
     } else {
       return (
@@ -278,11 +276,8 @@ export class BrandAlerts extends AlertExample {
     super(props)
 
     const brandName = this.state.params.get('brand_name')
-    this.state.query = 'brand-alerts'
+    this.state.query = BRAND_ALERTS
     this.state.keyword = brandName
-    // This is primarily to avoid an error with ESLint due to using == to check the keyword == null
-    // TODO make this a function
-    this.state.empty = this.state.keyword === null || typeof this.state.keyword === 'undefined' || this.state.keyword === ''
 
     this.getBrandAlerts = this.getBrandAlerts.bind(this)
     this.renderSearchBox = this.renderSearchBox.bind(this)
@@ -290,7 +285,7 @@ export class BrandAlerts extends AlertExample {
 
   getBrandAlerts(brandName) {
     const queryString = toQueryString({brand_name: brandName})
-    this.getAlerts(`/api/1/track/brand-alerts/?${queryString}`)
+    this.getAlerts(`/api/1/track/${BRAND_ALERTS}/?${queryString}`)
   }
 
   renderSearchBox() {
@@ -328,9 +323,8 @@ export class ProductAlerts extends AlertExample {
     super(props)
 
     const productName = this.state.params.get('product_name')
-    this.state.query = 'product-alerts'
+    this.state.query = PRODUCT_ALERTS
     this.state.keyword = productName
-    this.state.empty = this.state.keyword === null || typeof this.state.keyword === 'undefined' || this.state.keyword === ''
 
     this.getProductAlerts = this.getProductAlerts.bind(this)
     this.renderSearchBox = this.renderSearchBox.bind(this)
@@ -338,7 +332,7 @@ export class ProductAlerts extends AlertExample {
 
   getProductAlerts(productName) {
     const queryString = toQueryString({product_name: productName})
-    this.getAlerts(`/api/1/track/product-alerts/?${queryString}`)
+    this.getAlerts(`/api/1/track/${PRODUCT_ALERTS}/?${queryString}`)
   }
 
   renderSearchBox() {
@@ -376,9 +370,8 @@ export class RelatedBrands extends AlertExample {
     super(props)
 
     const brandName = this.state.params.get('brand_name')
-    this.state.query = 'related-brands'
+    this.state.query = RELATED_BRANDS
     this.state.keyword = brandName
-    this.state.empty = this.state.keyword === null || typeof this.state.keyword === 'undefined' || this.state.keyword === ''
 
     this.getRelatedBrandsAlerts = this.getRelatedBrandsAlerts.bind(this)
     this.renderSearchBox = this.renderSearchBox.bind(this)
@@ -386,7 +379,7 @@ export class RelatedBrands extends AlertExample {
 
   getRelatedBrandsAlerts(brandName) {
     const queryString = toQueryString({brand_name: brandName})
-    this.getAlerts(`/api/1/track/related-brands/?${queryString}`)
+    this.getAlerts(`/api/1/track/${RELATED_BRANDS}/?${queryString}`)
   }
 
   renderSearchBox() {
@@ -424,9 +417,8 @@ export class PositiveProductAlerts extends AlertExample {
     super(props)
 
     const productName = this.state.params.get('product_name')
-    this.state.query = 'positive-product-alerts'
+    this.state.query = POSITIVE_PRODUCT_ALERTS
     this.state.keyword = productName
-    this.state.empty = this.state.keyword === null || typeof this.state.keyword === 'undefined' || this.state.keyword === ''
 
     this.getPositiveProductAlerts = this.getPositiveProductAlerts.bind(this)
     this.renderSearchBox = this.renderSearchBox.bind(this)
@@ -434,7 +426,7 @@ export class PositiveProductAlerts extends AlertExample {
 
   getPositiveProductAlerts(productName) {
     const queryString = toQueryString({product_name: productName})
-    this.getAlerts(`/api/1/track/positive-product-alerts/?${queryString}`)
+    this.getAlerts(`/api/1/track/${POSITIVE_PRODUCT_ALERTS}/?${queryString}`)
   }
 
   renderSearchBox() {
@@ -463,6 +455,53 @@ export class PositiveProductAlerts extends AlertExample {
   componentDidMount() {
     if (this.state.keyword) {
       this.getPositiveProductAlerts(this.state.keyword)
+    }
+  }
+}
+
+export class StockAlerts extends AlertExample {
+  constructor(props) {
+    super(props)
+
+    const stockSymbol = this.state.params.get('stock_symbol')
+    this.state.query = STOCK_ALERTS
+    this.state.keyword = stockSymbol
+
+    this.getStockAlerts = this.getStockAlerts.bind(this)
+    this.renderSearchBox = this.renderSearchBox.bind(this)
+  }
+
+  getStockAlerts(stockSymbol) {
+    const queryString = toQueryString({stock_symbol: stockSymbol})
+    this.getAlerts(`/api/1/track/${STOCK_ALERTS}/?${queryString}`)
+  }
+
+  renderSearchBox() {
+    return (
+      <div>
+        <Row>
+          <Col md={12}>
+            <h1>Stock Alerts</h1>
+            <p>Monitor news articles for stock upgrade or downgrade events which may highlight a shift in market confidence towards your brand.</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <form method='GET'>
+              <InputWithButton
+                name='stock_symbol'
+                placeholder={this.state.keyword || 'Your Stock Ticker Symbol'}
+              />
+            </form>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+
+  componentDidMount() {
+    if (this.state.keyword) {
+      this.getStockAlerts(this.state.keyword)
     }
   }
 }
