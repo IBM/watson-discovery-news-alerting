@@ -1,6 +1,16 @@
 import { DiscoveryV1 } from 'watson-developer-cloud'
 import { getCredentials } from '../bluemix/config'
 
+import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './constants'
+
+// NOTE, due to the use of async/await, this file is not intended to be imported by the front-end
+
+// These globals are used to cache responses for the requested environment/collection. These might be null but currently are
+// only accessed from makeQuery, if you experience a null pointer accessing them then please move them into some protected
+// getter logic which will get the proper environment if it isn't set.
+let environment = null
+let collection = null
+
 async function getFirstDiscoverNewsEnvironment(discovery) {
   return new Promise( (resolve, reject) => {
       discovery.getEnvironments({}, (error, data) => {
@@ -37,6 +47,10 @@ async function getFirstDiscoverNewsCollection(discovery, environment) {
   })
 }
 
+// TODO investigate escaping queries before sending to the discovery service
+// This wrapper sets the discover service up and connects to the proper discovery environment and collection before making a query.
+//
+// All the params are passed straight through.
 function makeQuery(params) {
   const credentials = getCredentials('discovery')
 
@@ -46,13 +60,20 @@ function makeQuery(params) {
     version_date: '2016-11-07'
   })
 
+  // Using a Promise to allow the use of async/await in other code, this allows calls without callback hell which is important in
+  // finding the correct collection, it requires both the environment and a discovery instance.
   return new Promise(async (resolve, reject) => {
-    const environment = await getFirstDiscoverNewsEnvironment(discovery)
-    const collection = await getFirstDiscoverNewsCollection(discovery, environment)
+    // In order to query the news we need to find it in the list of collections for each environment.
+    // Storing these as module global because looking them up requires two subsequent web requests.
+    if (!environment || !collection) {
+      environment = await getFirstDiscoverNewsEnvironment(discovery)
+      collection = await getFirstDiscoverNewsCollection(discovery, environment)
+    }
 
     params.environment_id = environment.environment_id
     params.collection_id = collection.collection_id
 
+    // The SDK isn't setup for promises, wrapping in one so that we may use async/await with other calls to these functions
     discovery.query(params, (error, data) => {
       if (error) {
         reject(error)
@@ -89,18 +110,25 @@ export async function getRelatedBrands(brandName) {
   // Find more information about the brand to then explicitly exclude from queries
   const brandParams = {
     query: brandName,
-    filter: `blekko.lang:en,enrichedTitle.language:english,(enrichedTitle.entities.type:Company,enrichedTitle.entities.relevance>0.8,enrichedTitle.entities.text:${brandName}),blekko.documentType:news`,
+    filter: `blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news`,
     count: 50,
     return: 'taxonomy'
   }
   const brandResults = await makeQuery(brandParams)
 
+  // This is a fairly complex chain of reduce/filter/map which is used to post process the taxonomies coming back from the
+  // list of articles related to the brand name.
+  //
+  // In the end, this is chosing the top taxonomy found in the list of results for the brandname
   const taxonomies = brandResults.results
     .reduce((acc, val) => acc.concat(val.taxonomy), [])
     .filter((taxonomy) => taxonomy.confident !== 'no' && taxonomy.score > 0.5)
     .reduce((acc, val) => {
       const key = val.label.split('/').splice(1,2).join('/')
       let found = false
+
+      // A weighted score where the score is a number between 0-1 and each is weighted with a 1 to allow the number
+      // of repeat occurances to equalize the scoring
       for (const existing of acc) {
         if (existing.label === key) {
           existing.count += 1 + val.score
@@ -116,7 +144,8 @@ export async function getRelatedBrands(brandName) {
     .sort((a, b) => b.count - a.count)
     .map((taxonomyCount) => `(taxonomy.label:/${taxonomyCount.label},taxonomy.score>0.5,taxonomy.confident::!no)`)
 
-  // First attempt was to use the disambiguated name but that rarely results in anything, not sure why.
+  // First attempt was to use the disambiguated name but that rarely results in anything, because many entities don't have
+  // a disambiguated value
   /*const subTypes = brandResults.results
     .reduce((acc, val) => acc.concat(val.entities), [])
     .filter((entity) => entity.disambiguated.name === brandName)
@@ -145,19 +174,44 @@ export function getPositiveProductAlerts(productName) {
   return makeQuery(params)
 }
 
+export function getStockAlerts(stockSymbol) {
+  const params = {
+    query: `${stockSymbol},enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company`,
+    filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
+    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
+    return: 'alchemyapi_text,title,url'
+  }
+
+  return makeQuery(params)
+}
+
+export function validQueryName(queryName) {
+  return [
+    BRAND_ALERTS,
+    PRODUCT_ALERTS,
+    RELATED_BRANDS,
+    POSITIVE_PRODUCT_ALERTS,
+    STOCK_ALERTS
+  ].indexOf(queryName) !== -1
+}
+
+// Trying to avoid duck typing the names and using this case statement to make the correct query against Discover Service
 export async function getAlertsByQuery(query, keyword) {
   switch (query) {
-    case 'brand-alerts':
+    case BRAND_ALERTS:
       return await getBrandAlerts(keyword)
       break
-    case 'product-alerts':
+    case PRODUCT_ALERTS:
       return await getProductAlerts(keyword)
       break
-    case 'related-brands':
+    case RELATED_BRANDS:
       return await getRelatedBrands(keyword)
       break
-    case 'positive-product-alerts':
+    case POSITIVE_PRODUCT_ALERTS:
       return await getPositiveProductAlerts(keyword)
+      break
+    case STOCK_ALERTS:
+      return await getStockAlerts(keyword)
       break
     default:
       console.error('Unknown query! %s', query)

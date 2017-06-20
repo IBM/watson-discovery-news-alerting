@@ -10,9 +10,6 @@ import { CurrentSubscriptions } from './components/subscription'
 import './App.css'
 import 'watson-react-components/dist/css/watson-react-components.min.css'
 
-// Important, used to allow URLSearchparams to work across browsers
-import 'url-search-params-polyfill'
-
 // Primary homepage
 const Home = () => (
   <div>
