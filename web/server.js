@@ -6,8 +6,8 @@ import path from 'path'
 import { getBrandAlerts, getProductAlerts, getRelatedBrands, getPositiveProductAlerts, getStockAlerts } from './src/watson/discovery'
 import { track, subscriptionsByEmail, unsubscribe, updateDestination } from './src/models/track'
 import { useCode } from './src/models/access'
-import MainMessage, { Options } from './src/slack/message'
-import { respond } from './src/slack/actions'
+import MainMessage, { Options, registerMessage, registerButtonClick } from './src/slack/message'
+import { search, trackSlack } from './src/slack/actions'
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './src/watson/constants'
 
 const app = express()
@@ -35,21 +35,30 @@ function genericError(res, error) {
 
 // Button is clicked or menu item changed from Slack, this is the most common case
 app.post('/api/1/slack/button/', (req, res) => {
-  const payload = JSON.parse(req.body.payload)
-  let alertType = null
-  let keyword = null
+  const message = registerButtonClick(req.body)
+  console.log(req.body)
 
-  for (const action of payload.actions) {
-    if (action.name === 'alert_type') {
-      alertType = action.selected_options[0].value
-    }
-
-    if (action.name === 'filter_list') {
-      keyword = action.selected_options[0].value
-    }
+  if (message.shouldSearch()) {
+    console.log('Getting results')
+    const payload = JSON.parse(req.body.payload)
+    search(payload.response_url, message)
   }
-  const response = MainMessage.toSlack(alertType, keyword)
-  res.send(response)
+
+  if (message.shouldSaveTracking()) {
+    console.log('Tracking')
+    // Saving in the background and clearing the message in Slack.
+    const payload = JSON.parse(req.body.payload)
+    trackSlack(
+      payload.user.id,
+      payload.channel.id,
+      payload.team.id,
+      payload.response_url,
+      message)
+
+    return res.json({text: 'Tracking'})
+  }
+
+  res.json(message.toSlack())
 })
 
 // Populate the dynamic menus (only the keyword menu) in Slack
@@ -59,11 +68,25 @@ app.post('/api/1/slack/menu/', (req, res) => {
 })
 
 // Initial request from Slack when the registered command is executed, this ignores the text after the command
+//The req.body should be of this format:
+/*
+ * { token: 'xxx',
+ *   team_id: 'xxx',
+ *   team_domain: 'xxx',
+ *   channel_id: 'xxx',
+ *   channel_name: 'directmessage',
+ *   user_id: 'xxx',
+ *   user_name: 'xxx',
+ *   command: '/track',
+ *   text: '',
+ *   response_url: 'xxx' }
+ */
 app.post('/api/1/slack/command/', (req, res) => {
-  // respond is a background thread which will respond but allow the body to be returned quickly
-  respond(req.body.response_url, JSON.stringify(MainMessage.toSlack()))
+  const initialMessage = new MainMessage()
+  registerMessage(initialMessage)
+
   // The response is used as the message Slack displays
-  res.json({text: 'Loading results from Watson...'})
+  res.json(initialMessage.toSlack())
 })
 // End Slack routes
 

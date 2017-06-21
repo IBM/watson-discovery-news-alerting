@@ -70,6 +70,25 @@ export async function track(email, query, keyword, frequency) {
   return result
 }
 
+export async function trackSlack(slackUser, channel, team, query, keyword, frequency) {
+  const trackDb = cloudant.db.use(dbName)
+  const result = await trackDb.insert({
+      slackUser: slackUser,
+      channel: channel,
+      team: team,
+      query: query,
+      keyword: keyword,
+      subscribed: true,
+      destinationEmail: false,
+      destinationSlack: true,
+      frequency: frequency,
+      lastUpdate: null
+    },
+    uuid.v4())
+
+  return result
+}
+
 // Kinda crazy selector used with Cloudant to get a list of anyone subscribed to recieve and update which hasn't recieved one in
 // their chosen time frame (frequency)
 export async function getSubscribers(destinationEmail, destinationSlack) {
