@@ -120,7 +120,7 @@ export default class MainMessage {
   }
 
   shouldSearch() {
-    return this.query && this.keyword && this.frequency && this.hasResults
+    return this.query && this.keyword && this.frequency && this.hasResults && !this.isTracking
   }
 
   shouldSaveTracking() {
@@ -131,20 +131,29 @@ export default class MainMessage {
     return this.query && this.keyword && this.hasResults
   }
 
+  updateLoadingResults() {
+    this.body.attachments[0].fields.push({
+      title: 'Loading...',
+      value: 'Watson is searching for results.',
+      short: false
+    })
+  }
+
   updateSearchResults(results) {
+    // Remove the loading message
+    this.body.attachments[0].fields = this.body.attachments[0].fields.filter((f) => f.title !== 'Loading...')
+
     for (const result of results) {
-      this.body.attachments.push({
+      let details = result.details
+      // Shorten the text sent to Slack
+      if (details && details.length > 150) {
+        details = `${details.slice(0, 150)}...`
+      }
+
+      this.body.attachments[0].fields.push({
         title: result.title,
-        title_link: result.title_link,
-        color: '9855d4',
-        fallback: result.title,
-        fields: [
-          {
-            title: 'News Article',
-            value: result.details,
-            short: false
-          }
-        ]
+        value: details,
+        short: false
       })
     }
   }
