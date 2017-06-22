@@ -13,4 +13,3 @@ General TODO statements based on known issues and general feedback.
 1. [q] Random taxonomies in results (like Disney in the /auto taxonomy), should taxonomies be used?
   * [a] Check the taxonomies relevance in the output.
 1. Allow only the newest (`yyyymmdd>20170619`)
-1. Lower memory size and check that building still is OK.
