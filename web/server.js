@@ -40,6 +40,8 @@ app.post('/api/1/slack/button/', (req, res) => {
 
   if (message.shouldSearch()) {
     console.log('Getting results')
+    // Give a loading message back to Slack in case the search takes a long time
+    message.updateLoadingResults()
     const payload = JSON.parse(req.body.payload)
     search(payload.response_url, message)
   }
@@ -55,7 +57,7 @@ app.post('/api/1/slack/button/', (req, res) => {
       payload.response_url,
       message)
 
-    return res.json({text: 'Tracking'})
+    return res.json({text: 'You will receive updates as these results change.'})
   }
 
   res.json(message.toSlack())
