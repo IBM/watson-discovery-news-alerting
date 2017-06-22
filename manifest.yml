@@ -1,5 +1,5 @@
 ---
-memory: 500MB
+memory: 256MB
 instances: 1
 declared-services:
   discovery:
