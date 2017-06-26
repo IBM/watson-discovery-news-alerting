@@ -10,13 +10,13 @@ declared-services:
     plan: Lite
 applications:
 - name: discovery-news-alerting-web
-  path: ./web
+  path: ./app
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
   - discovery
 - name: discovery-news-alerting-notifier
-  path: ./tracker
+  path: ./app
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
