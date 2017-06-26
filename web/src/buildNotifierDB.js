@@ -1,7 +1,7 @@
-import { createTrackDb } from '../web/src/models/track'
-import { createAccessDb } from '../web/src/models/access'
+import { createTrackDb } from './models/track'
+import { createAccessDb } from './models/access'
 
-console.log('Create required databases')
+console.log('Creating required databases')
 createTrackDb()
   .then((result) => {
     console.log('Track DB created')
@@ -13,3 +13,4 @@ createAccessDb()
     console.log('Access DB created')
   })
   .catch(console.error)
+console.log('Completed creating required databases')

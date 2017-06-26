@@ -3,12 +3,13 @@ import ReactDOMServer from 'react-dom/server'
 import { StaticRouter } from 'react-router'
 
 import nodemailer from 'nodemailer'
-import WebClient from '@slack/client'
+import { WebClient } from '@slack/client'
 
-import { Email } from '../web/src/components/email'
-import { getAlertsByQuery } from '../web/src/watson/discovery'
-import { getSubscribers, subscriberUpdated } from '../web/src/models/track'
-import { createCode } from '../web/src/models/access'
+import { MainMessage } from './src/slack/message'
+import { Email } from './src/components/email'
+import { getAlertsByQuery } from './src/watson/discovery'
+import { getSubscribers, subscriberUpdated } from './src/models/track'
+import { createCode } from './src/models/access'
 
 
 // Render the email via React and then send using nodemailer, this would be better done using an email service to keep

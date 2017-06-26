@@ -9,8 +9,14 @@ declared-services:
     label: cloudantNoSQLDB
     plan: Lite
 applications:
-- name: eee-web
+- name: discovery-news-alerting-web
   path: ./web
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  services:
+  - cloudantNoSQLDB
+  - discovery
+- name: discovery-news-alerting-notifier
+  path: ./tracker
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
