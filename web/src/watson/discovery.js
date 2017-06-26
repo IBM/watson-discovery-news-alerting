@@ -1,5 +1,6 @@
 import { DiscoveryV1 } from 'watson-developer-cloud'
 import { getCredentials } from '../bluemix/config'
+import { leftPad } from '../models/frequency'
 
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './constants'
 
@@ -84,7 +85,7 @@ function makeQuery(params) {
   })
 }
 
-export function getBrandAlerts(brandName) {
+export function getBrandAlerts(brandName, lastUpdatedAt=null) {
   const params = {
     query: `${encodeURIComponent(brandName)},enrichedTitle.entities.type:Company,enrichedTitle.entities.relevance>0.8,blekko.documentType:news`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -92,10 +93,11 @@ export function getBrandAlerts(brandName) {
     return: 'alchemyapi_text,title,url'
   }
 
+  addDateFilter(params, lastUpdatedAt)
   return makeQuery(params)
 }
 
-export function getProductAlerts(productName) {
+export function getProductAlerts(productName, lastUpdatedAt=null) {
   const params = {
     query: `${encodeURIComponent(productName)},blekko.documentType:news`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -103,10 +105,11 @@ export function getProductAlerts(productName) {
     return: 'alchemyapi_text,title,url'
   }
 
+  addDateFilter(params, lastUpdatedAt)
   return makeQuery(params)
 }
 
-export async function getRelatedBrands(brandName) {
+export async function getRelatedBrands(brandName, lastUpdatedAt=null) {
   // Find more information about the brand to then explicitly exclude from queries
   const brandParams = {
     query: brandName,
@@ -160,10 +163,11 @@ export async function getRelatedBrands(brandName) {
     return: 'alchemyapi_text,title,url'
   }
 
+  addDateFilter(params, lastUpdatedAt)
   return await makeQuery(params)
 }
 
-export function getPositiveProductAlerts(productName) {
+export function getPositiveProductAlerts(productName, lastUpdatedAt=null) {
   const params = {
     query: `${productName},docSentiment.type::positive`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news,(docSentiment.type::positive,docSentiment.score>0.5)',
@@ -171,10 +175,11 @@ export function getPositiveProductAlerts(productName) {
     return: 'alchemyapi_text,title,url'
   }
 
+  addDateFilter(params, lastUpdatedAt)
   return makeQuery(params)
 }
 
-export function getStockAlerts(stockSymbol) {
+export function getStockAlerts(stockSymbol, lastUpdatedAt=null) {
   const params = {
     query: `${stockSymbol},enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -182,7 +187,27 @@ export function getStockAlerts(stockSymbol) {
     return: 'alchemyapi_text,title,url'
   }
 
+  addDateFilter(params, lastUpdatedAt)
   return makeQuery(params)
+}
+
+// Warning, this method mutates the params hash and possible adds to the filtering if lastUpdatedAt exists
+// NOTE if implementing, it'd work better to convert all this logic into a single class because there is quite a bit of duplication.
+function addDateFilter(params, lastUpdatedAt) {
+  if (lastUpdatedAt) {
+    // Uncertain why but often Cloudant returns dates as strings, might be related to misconfigured indexes.
+    if (typeof lastUpdatedAt === 'string') {
+      // NOTE this is a likely cause of bugs, what if the string is malformed? Will it give an irrelevant date in response?
+      // Assuming the date is in ISO8601 format
+      lastUpdatedAt = new Date(lastUpdatedAt)
+    }
+    const day = leftPad(lastUpdatedAt.getDate(), '0', 2)
+    const month = leftPad(lastUpdatedAt.getMonth() + 1, '0', 2)  // JavaScript Dates start at 0 but Watson's start at 1
+    const year = lastUpdatedAt.getFullYear()
+
+    // This will mutate the params hash
+    params.filter = `${params.filter},yyyymmdd>=${year}${month}${day}`
+  }
 }
 
 export function validQueryName(queryName) {
@@ -196,22 +221,22 @@ export function validQueryName(queryName) {
 }
 
 // Trying to avoid duck typing the names and using this case statement to make the correct query against Discover Service
-export async function getAlertsByQuery(query, keyword) {
+export async function getAlertsByQuery(query, keyword, lastUpdatedAt=null) {
   switch (query) {
     case BRAND_ALERTS:
-      return await getBrandAlerts(keyword)
+      return await getBrandAlerts(keyword, lastUpdatedAt)
       break
     case PRODUCT_ALERTS:
-      return await getProductAlerts(keyword)
+      return await getProductAlerts(keyword, lastUpdatedAt)
       break
     case RELATED_BRANDS:
-      return await getRelatedBrands(keyword)
+      return await getRelatedBrands(keyword, lastUpdatedAt)
       break
     case POSITIVE_PRODUCT_ALERTS:
-      return await getPositiveProductAlerts(keyword)
+      return await getPositiveProductAlerts(keyword, lastUpdatedAt)
       break
     case STOCK_ALERTS:
-      return await getStockAlerts(keyword)
+      return await getStockAlerts(keyword, lastUpdatedAt)
       break
     default:
       console.error('Unknown query! %s', query)

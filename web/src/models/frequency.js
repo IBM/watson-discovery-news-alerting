@@ -31,3 +31,10 @@ export function nextMonth() {
 export function tomorrow() {
   return new Date(today().getTime() + day)
 }
+
+// Taken from https://stackoverflow.com/a/36247412/1589147 for use in padding dates to work with Watson
+export const leftPad = (s, c, n) => {
+  s = s.toString()
+  c = c.toString()
+  return s.length > n ? s : c.repeat(n - s.length) + s
+}

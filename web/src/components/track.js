@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 import { Row, Col } from 'react-bootstrap'
 import { InputWithButton, Icon, Alert, JsonLinkInline } from 'watson-react-components/dist/components'
 import { Tracking } from './tracking'
+import { leftPad } from '../models/frequency'
 
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from '../watson/constants'
 
@@ -12,13 +13,6 @@ function toQueryString(params) {
   return Object.keys(params)
       .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
       .join('&')
-}
-
-// Taken from https://stackoverflow.com/a/36247412/1589147
-const leftPad = (s, c, n) => {
-  s = s.toString()
-  c = c.toString()
-  return s.length > n ? s : c.repeat(n - s.length) + s
 }
 
 // This is a default example of using recharts, it's a well documented project and easy to implement with Watson aggregations
@@ -136,7 +130,7 @@ class AlertExample extends Component {
       // The date is in milliseconds provided by Watson, NOTE milliseconds!
       date.setUTCSeconds(result.key / 1000)
       data.push({
-        name: `${leftPad(date.getUTCMonth(), '0', 2)}/${leftPad(date.getUTCDate(), '0', 2)}`,  // Change the date format to be MM/DD
+        name: `${leftPad(date.getUTCMonth() + 1, '0', 2)}/${leftPad(date.getUTCDate(), '0', 2)}`,  // Change the date format to be MM/DD
         amount: result.matching_results,
         date: date})
     }
