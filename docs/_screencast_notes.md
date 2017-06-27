@@ -1,6 +1,6 @@
 # Screencast Notes
 
-The goal of this screencast is to highlight getting started queries in the Discovery Query Tool and how they're implemented using one of the IBM developed SDKs.
+The goal of this [screencast](https://youtu.be/N-HaIpPGde0) is to highlight how to get started with queries in the Discovery Query Tool.
 
 ## Opening the Discovery Query Tool
 
@@ -18,7 +18,7 @@ Start by selecting the "Use natural language" for a query.
 
 1. Enter the query "IBM Watson in healthcare"
 1. Review the results, notice any which might not fit.
-1. Add a filter to remove a result, in the example it's "enrichedTitle.text:!(XFINITY|Xfinity|Comcast)"
+1. Add a filter to remove a result, in the example it's "`enrichedTitle.text:!(XFINITY|Xfinity|Comcast)`"
 1. Review features of filter
   * Highlighting certain attributes in the response
   * Negating a query
@@ -34,13 +34,13 @@ Start by selecting "Use the Discovery Query Language" which opens up a text box 
 
 1. Enter the query "IBM Watson in healthcare"
 1. Review results and the similarity to the "Use natural language" results
-1. Change the query to look for "enrichedTitle.text:21st Century Medicine"
+1. Change the query to look for "`enrichedTitle.text:21st Century Medicine`"
 1. Review the results and look for any odd titles
-1. Change the query to look for "enrichedTitle.text:\"21st Century Medicine\""
+1. Change the query to look for "`enrichedTitle.text:\"21st Century Medicine\"`"
 1. Review the results, they shouldn't change much
-1. Change the query to look for "enrichedTitle.text:\"21st Century Medicine\: Where Big Tech Is Placing Bets In Healthcare\"", this is an exact search for an article in the results
+1. Change the query to look for "`enrichedTitle.text:\"21st Century Medicine\: Where Big Tech Is Placing Bets In Healthcare\"`", this is an exact search for an article in the results
 1. Review that some results are still not relevant
-1. Enter this filter "enrichedTitle.text:!\"FE Investegate\""
+1. Enter this filter "`enrichedTitle.text:!\"FE Investegate\"`"
 1. Review that now the "FE Investegate" article is no longer shown
 
 ## Moving to the SDK

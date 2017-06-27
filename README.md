@@ -162,6 +162,13 @@ Background process which periodically sends updates to Slack and or email.
 
 ## Useful Links
 
+### Discovery Service
+* https://www.ibm.com/watson/developercloud/doc/discovery/query-reference.html
+* https://www.ibm.com/watson/developercloud/doc/natural-language-understanding/#service-features
+
+### Web
+* http://recharts.org/
+
 ### Bot
 * https://dashboard.ngrok.com/get-started
 * https://api.slack.com/docs/message-menus
@@ -172,3 +179,6 @@ Background process which periodically sends updates to Slack and or email.
 * https://www.ibm.com/watson/developercloud/doc/discovery/building.html#understanding-the-difference-between-entities-concepts-and-keywords
 * https://github.com/ibm/watson-online-store
 * https://github.com/watson-developer-cloud/node-sdk
+
+### Testing
+* https://facebook.github.io/jest/
