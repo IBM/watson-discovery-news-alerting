@@ -6,7 +6,7 @@ In this developer journey we built an application which integrates with Watson D
 
 The journey highlights the steps required to build a front-end management interface to search Watson and a back-end service which periodically sends updates out related to customizable queries.
 
-![Slack Application Example](https://raw.githubusercontent.com/IBM/watson-discovery-alerting/master/docs/images/example-slack-interaction.gif)
+![Slack Application Example](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/example-slack-interaction.gif)
 
 # General Project Layout
 
@@ -22,7 +22,7 @@ The server which periodically emails news alerts to subscribed users can be foun
 ./app/notifier.js
 ```
 
-![Architecture Diagram](https://raw.githubusercontent.com/IBM/watson-discovery-alerting/master/docs/images/architecture.png)
+![Architecture Diagram](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/architecture.png)
 
 # Included components
 
@@ -69,13 +69,13 @@ Create the following services, note that these links will by default start the s
 
 [Watson Discovery](https://console.ng.bluemix.net/catalog/services/discovery?env_id=ibm:yp:us-south)
 
-![Setup Discovery Service](https://raw.githubusercontent.com/IBM/watson-discovery-alerting/master/docs/images/create-discovery-service.gif)
+![Setup Discovery Service](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/create-discovery-service.gif)
 
 Make certain to rename the service you've created to be called `discovery` or change the values in `./manifest.yml`.
 
 * [Cloudant Database](https://console.bluemix.net/catalog/services/cloudant-nosql-db?env_id=ibm:yp:us-south)
 
-![Setup Cloudant Service](https://raw.githubusercontent.com/IBM/watson-discovery-alerting/master/docs/images/create-cloudant-service.gif)
+![Setup Cloudant Service](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/create-cloudant-service.gif)
 
 Make certain to rename the service you've created to be called `cloudantNoSQLDB` or change the values in `./manifest.yml`.
 
