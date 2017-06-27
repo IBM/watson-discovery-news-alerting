@@ -179,16 +179,30 @@ export function getPositiveProductAlerts(productName, lastUpdatedAt=null) {
   return makeQuery(params)
 }
 
-export function getStockAlerts(stockSymbol, lastUpdatedAt=null) {
+export async function getStockAlerts(stockSymbol, lastUpdatedAt=null) {
   const params = {
     query: `${stockSymbol},enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
     aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
+    count: 50,
     return: 'alchemyapi_text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)
-  return makeQuery(params)
+
+  // Often there will be duplicated entities which are easiest to find by removing duplicate titles
+  const results = await makeQuery(params)
+  const uniqueTitles = results.results.reduce((acc, val) => {
+    if (!acc.some((v) => v.title === val.title)) {
+      acc.push(val)
+    }
+
+    return acc
+  }, [])
+
+  results.results = uniqueTitles
+
+  return results
 }
 
 // Warning, this method mutates the params hash and possible adds to the filtering if lastUpdatedAt exists
