@@ -1,3 +1,5 @@
+import {} from 'dotenv/config'
+
 import { createTrackDb } from './models/track'
 import { createAccessDb } from './models/access'
 

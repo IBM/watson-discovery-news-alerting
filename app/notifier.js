@@ -1,6 +1,8 @@
-import React from 'react';
+import {} from 'dotenv/config'
+
 import ReactDOMServer from 'react-dom/server'
 import { StaticRouter } from 'react-router'
+import React from 'react'
 
 import nodemailer from 'nodemailer'
 import { WebClient } from '@slack/client'
@@ -54,7 +56,7 @@ function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials, one
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return console.error(error);
+      return console.error(error)
     }
     console.log('Message %s sent: %s', info.messageId, info.response)
   })

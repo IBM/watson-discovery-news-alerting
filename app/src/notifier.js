@@ -57,7 +57,7 @@ function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials, one
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return console.error(error);
+      return console.error(error)
     }
     console.log('Message %s sent: %s', info.messageId, info.response)
   })
