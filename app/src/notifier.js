@@ -1,14 +1,18 @@
-import React from 'react';
-import ReactDOMServer from 'react-dom/server'
-import { StaticRouter } from 'react-router'
+const React = require('react')
+const ReactDOMServer = require('react-dom/server')
+const StaticRouter = require('react-router').StaticRouter
 
-import nodemailer from 'nodemailer'
-import WebClient from '@slack/client'
+const nodemailer = require('nodemailer')
+const WebClient = require('@slack/client').WebClient
 
-import { Email } from '../web/src/components/email'
-import { getAlertsByQuery } from '../web/src/watson/discovery'
-import { getSubscribers, subscriberUpdated } from '../web/src/models/track'
-import { createCode } from '../web/src/models/access'
+// These need to be absolute paths in order to work with the web-worker framework requirements
+// Note, import doesn't work with the worker scripts pulled in from tiny-worker
+const Email = require(`${__dirname}/components/email`).Email
+const getAlertsByQuery = require(`${__dirname}/watson/discovery`).getAlertsByQuery
+const getSubscribers = require(`${__dirname}/models/track`).getSubscribers
+const subscriberUpdated = require(`${__dirname}/models/track`).subscriberUpdated
+const MainMessage = require(`${__dirname}/slack/message`).MainMessage
+const createCode = require(`${__dirname}/models/access`).createCode
 
 
 // Render the email via React and then send using nodemailer, this would be better done using an email service to keep
@@ -53,7 +57,7 @@ function renderAndSendEmail(emailAddress, results, baseUrl, mailCredentials, one
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return console.error(error);
+      return console.error(error)
     }
     console.log('Message %s sent: %s', info.messageId, info.response)
   })
@@ -79,7 +83,7 @@ async function sendSubscriberEmails() {
   for (const subscriber of results.docs) {
     // TODO make a test to see what happens when keyword or query are null, possibly protect against issues that would
     // stall delivery of mails.
-    const response = await getAlertsByQuery(subscriber.query, subscriber.keyword)
+    const response = await getAlertsByQuery(subscriber.query, subscriber.keyword, subscriber.lastUpdate)
     if (response && response.results.length > 0) {
       console.log('Sending email update')
       const email = subscriber.email
@@ -108,7 +112,7 @@ async function sendSubscriberSlacks() {
   // Restricting the subscriber list to people who have opt'ed in to receive Slack notifications
   const results = await getSubscribers(false, true)
   for (const subscriber of results.docs) {
-    const response = await getAlertsByQuery(subscriber.query, subscriber.keyword)
+    const response = await getAlertsByQuery(subscriber.query, subscriber.keyword, subscriber.lastUpdate)
     if (response && response.results.length > 0) {
       slack.chat.postMessage(
         subscriber.slack,  // TODO check that this works via the email as well, hasn't been tested
@@ -140,5 +144,16 @@ export function run() {
     .catch((error) => console.error(error))
 }
 
-// TODO if moved to the web server, remove this call and use the exported function run to start the process
-run()
+onmessage = (e) => {
+  postMessage(e.data)
+
+  if (e.data.status === 'start') {
+    run()
+  } else {
+    throw new Error('Unknown status requested')
+  }
+}
+
+onerror = (error) => {
+  console.error(error)
+}

@@ -1,3 +1,5 @@
+import {} from 'dotenv/config'
+
 import bodyParser from 'body-parser'
 import express from 'express'
 import morgan from 'morgan'

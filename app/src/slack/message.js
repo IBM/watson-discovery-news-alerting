@@ -156,6 +156,14 @@ export default class MainMessage {
         short: false
       })
     }
+
+    if (results.length === 0) {
+      this.body.attachments[0].fields.push({
+        title: 'No results',
+        value: "We're sorry, this query returned no results. You may still track it in case results begin showing up.",
+        short: false
+      })
+    }
   }
 
   setInitialBody() {
