@@ -1,9 +1,9 @@
 const request = require('request')
 // These need to be absolute paths in order to work with the web-worker framework requirements
 // Note, import doesn't work with the worker scripts pulled in from tiny-worker
-const MainMessage = require(`${__dirname}/src/slack/message`).default
-const discovery = require(`${__dirname}/src/watson/discovery`)
-const track = require(`${__dirname}/src/models/track`)
+const MainMessage = require(`${__dirname}/app/src/slack/message`).default
+const discovery = require(`${__dirname}/app/src/watson/discovery`)
+const track = require(`${__dirname}/app/src/models/track`)
 
 // This is a background worker so few features are available.
 // NOTE self is used instead of this while working with workers

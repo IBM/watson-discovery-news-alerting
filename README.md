@@ -1,4 +1,6 @@
-# Watson Discovery News Alerting [![Build Status](https://travis-ci.org/eerwitt/discovery-news.svg?branch=master)](https://travis-ci.org/eerwitt/discovery-news)
+[![Build Status](https://travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
+
+# Watson Discovery News Alerting
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/IBM/discovery-news-alerting)
 
