@@ -66,30 +66,30 @@
     "node": "7.10.0"
   },
   "scripts": {
-    "startdev": "./node_modules/babel-cli/bin/babel-node.js ./scripts/start.js",
-    "start-notifier": "yarn run build-notifier && ./node_modules/babel-cli/bin/babel-node.js ./notifier.js",
-    "build-notifier": "./node_modules/babel-cli/bin/babel-node.js ./src/buildNotifierDB.js",
-    "start": "./node_modules/babel-cli/bin/babel-node.js ./server.js",
-    "build": "./node_modules/babel-cli/bin/babel-node.js ./scripts/build.js",
-    "test": "./node_modules/babel-cli/bin/babel-node.js ./scripts/test.js --env=jsdom"
+    "startdev": "./node_modules/babel-cli/bin/babel-node.js ./apps/scripts/start.js",
+    "start-notifier": "yarn run build-notifier && ./node_modules/babel-cli/bin/babel-node.js ./app/notifier.js",
+    "build-notifier": "./node_modules/babel-cli/bin/babel-node.js ./app/src/buildNotifierDB.js",
+    "start": "./node_modules/babel-cli/bin/babel-node.js ./app/server.js",
+    "build": "./node_modules/babel-cli/bin/babel-node.js ./app/scripts/build.js",
+    "test": "./node_modules/babel-cli/bin/babel-node.js ./app/scripts/test.js --env=jsdom"
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "app/src/**/*.{js,jsx}"
     ],
     "setupFiles": [
-      "<rootDir>/config/polyfills.js"
+      "<rootDir>/app/config/polyfills.js"
     ],
     "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.js?(x)",
-      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
+      "<rootDir>/app/src/**/__tests__/**/*.js?(x)",
+      "<rootDir>/app/src/**/?(*.)(spec|test).js?(x)"
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
-      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^.+\\.css$": "<rootDir>/app/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/app/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
