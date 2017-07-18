@@ -1,7 +1,5 @@
 ---
 memory: 512MB
-instances: 1
-random-route: false
 declared-services:
   discovery-news-service:
     label: discovery
@@ -10,18 +8,21 @@ declared-services:
     label: cloudantNoSQLDB
     plan: Lite
 applications:
-- name: watson-discovery-news-alerting
-  path: ./app
+- path: ./app
+  name: watson-discovery-news-alerting
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  instances: 1
+  random-route: false
   services:
   - cloudantNoSQLDB
   - discovery-news-service
-- name: watson-discovery-news-alert-notifier
-  path: ./app
+- path: ./app
+  name: watson-discovery-news-alert-notifier
   command: yarn run start-notifier
   no-route: true
   health-check-type: process
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  instances: 1
   services:
   - cloudantNoSQLDB
   - discovery-news-service
