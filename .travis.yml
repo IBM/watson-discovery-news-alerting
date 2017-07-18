@@ -1,29 +1,34 @@
 language: node_js
-dist: trusty
-sudo: required
-node_js: 6
-script:
-- npm run test
+node_js: 7
+cache: yarn
+before_script: cd app
+script: yarn lint
 
-cache:
-  directories:
-  - node_modules
-  - web/node_modules
-  - bot/node_modules
-env:
-  global:
-  - CF_APP=TODO
-  - CF_API=TODO
-  - CF_ORGANIZATION=TODO
-  - CF_SPACE=TODO
-before_deploy: npm install -g https://github.com/germanattanasio/cf-blue-green
-deploy:
-  provider: script
-  script:
-  - cf-blue-green-travis
-  on:
-    branch: master
-    repo: watson-developer-cloud/TODO
-  skip_cleanup: true
-notifications:
-  email: false
+# dist: trusty
+# sudo: required
+# node_js: 6
+# script:
+# - npm run test
+
+# cache:
+#   directories:
+#   - node_modules
+#   - web/node_modules
+#   - bot/node_modules
+# env:
+#   global:
+#   - CF_APP=TODO
+#   - CF_API=TODO
+#   - CF_ORGANIZATION=TODO
+#   - CF_SPACE=TODO
+# before_deploy: npm install -g https://github.com/germanattanasio/cf-blue-green
+# deploy:
+#   provider: script
+#   script:
+#   - cf-blue-green-travis
+#   on:
+#     branch: master
+#     repo: watson-developer-cloud/TODO
+#   skip_cleanup: true
+# notifications:
+#   email: false
