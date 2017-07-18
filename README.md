@@ -145,7 +145,7 @@ $ yarn start
 
 # Sample output
 
-![Slack Application Example](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/example-slack-interaction.gif)
+![Slack Application Example](doc/source/images/example-slack-interaction.gif)
 
 
 # General Project Layout
@@ -162,7 +162,7 @@ The server which periodically emails news alerts to subscribed users can be foun
 ./app/notifier.js
 ```
 
-![Architecture Diagram](https://raw.githubusercontent.com/IBM/watson-discovery-news-alerting/master/docs/images/architecture.png)
+![Architecture Diagram](doc/source/images/architecture.png)
 
 ### 6. Deploy to Bluemix
 
