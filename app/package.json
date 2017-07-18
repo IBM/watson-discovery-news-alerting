@@ -71,6 +71,8 @@
     "build-notifier": "./node_modules/babel-cli/bin/babel-node.js ./src/buildNotifierDB.js",
     "start": "./node_modules/babel-cli/bin/babel-node.js ./server.js",
     "build": "./node_modules/babel-cli/bin/babel-node.js ./scripts/build.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "./node_modules/babel-cli/bin/babel-node.js ./scripts/test.js --env=jsdom"
   },
   "jest": {
