@@ -10,13 +10,13 @@ declared-services:
     label: cloudantNoSQLDB
     plan: Lite
 applications:
-- name: discovery-news-alerting
+- name: watson-discovery-news-alerting
   path: ./app
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
   - discovery-news-service
-- name: discovery-news-alert-notifier
+- name: watson-discovery-news-alert-notifier
   path: ./app
   command: yarn run start-notifier
   no-route: true
