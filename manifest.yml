@@ -1,8 +1,9 @@
 ---
-memory: 256MB
+memory: 512MB
 instances: 1
+random-route: false
 declared-services:
-  discovery:
+  discovery-news-service:
     label: discovery
     plan: free
   cloudantNoSQLDB:
@@ -14,7 +15,7 @@ applications:
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
-  - discovery
+  - discovery-news-service
 - name: discovery-news-alert-notifier
   path: ./app
   command: yarn run start-notifier
@@ -23,4 +24,6 @@ applications:
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
   - cloudantNoSQLDB
-  - discovery
+  - discovery-news-service
+env:
+  SLACK_TOKEN_API: placeholder
