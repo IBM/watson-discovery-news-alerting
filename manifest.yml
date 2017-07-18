@@ -10,7 +10,7 @@ declared-services:
     label: cloudantNoSQLDB
     plan: Lite
 applications:
-- name: discovery-news-alert-web
+- name: discovery-news-alerting
   path: ./app
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
   services:
@@ -26,4 +26,4 @@ applications:
   - cloudantNoSQLDB
   - discovery-news-service
 env:
-  SLACK_TOKEN_API: placeholder
+  SLACK_API_TOKEN: placeholder
