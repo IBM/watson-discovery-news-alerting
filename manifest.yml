@@ -10,7 +10,7 @@ declared-services:
 applications:
 - path: ./app
   name: watson-discovery-news-alerting
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  buildpack: sdk-for-nodejs
   instances: 1
   random-route: false
   services:
@@ -21,7 +21,7 @@ applications:
   command: yarn run start-notifier
   no-route: true
   health-check-type: process
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.35
+  buildpack: sdk-for-nodejs
   instances: 1
   services:
   - cloudantNoSQLDB
