@@ -1,10 +1,10 @@
 ---
 memory: 512MB
 declared-services:
-  discovery-news-service:
+  wdna-discovery:
     label: discovery
     plan: free
-  cloudantNoSQLDB:
+  wdna-cloudant:
     label: cloudantNoSQLDB
     plan: Lite
 applications:
@@ -14,8 +14,8 @@ applications:
   instances: 1
   random-route: false
   services:
-  - cloudantNoSQLDB
-  - discovery-news-service
+  - wdna-cloudant
+  - wdna-discovery
 - path: ./app
   name: watson-discovery-news-alert-notifier
   command: yarn run start-notifier
@@ -24,7 +24,7 @@ applications:
   buildpack: sdk-for-nodejs
   instances: 1
   services:
-  - cloudantNoSQLDB
-  - discovery-news-service
+  - wdna-cloudant
+  - wdna-discovery
 env:
   SLACK_API_TOKEN: placeholder
