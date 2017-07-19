@@ -113,10 +113,5 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  },
-  "devDependencies": {
-    "eslint": "^3.19.0",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-react": "^7.0.1"
   }
 }
