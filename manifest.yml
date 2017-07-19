@@ -9,7 +9,7 @@ declared-services:
     plan: Lite
 applications:
 - path: ./app
-  name: news-alerting
+  name: watson-discovery-news-alerting
   buildpack: sdk-for-nodejs
   instances: 1
   random-route: false
@@ -17,7 +17,7 @@ applications:
   - wdna-cloudant
   - wdna-discovery
 - path: ./app
-  name: news-alert-notifier
+  name: wason-discovery-news-alert-notifier
   command: yarn run start-notifier
   no-route: true
   health-check-type: process
