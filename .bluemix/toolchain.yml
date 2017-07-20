@@ -3,7 +3,7 @@ template:
   name:
     name: "Alert Notifier App"
   description:
-    $ref: "Sends updates to email and slack"
+    $ref: "#/messages/template.description"
   required:
     - sample-build
     - sample-repo
