@@ -17,7 +17,7 @@ applications:
   - wdna-cloudant
   - wdna-discovery
 - path: ./app
-  name: wason-discovery-news-alert-notifier
+  name: watson-discovery-news-alert-notifier
   command: yarn run start-notifier
   no-route: true
   health-check-type: process
