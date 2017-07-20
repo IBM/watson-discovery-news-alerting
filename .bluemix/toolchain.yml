@@ -4,8 +4,6 @@ template:
     name: "Alert Notifier App"
   description:
     $ref: "Sends updates to email and slack"
-  header: '![](toolchain.svg?localize)'
-  icon: icon.svg
   required:
     - sample-build
     - sample-repo
