@@ -170,7 +170,7 @@ Background process which periodically sends updates to email.
 
 > NOTE: This only needs to be set if the application is running locally.
 
-The credentials for Bluemix services (Discovery), can
+The credentials for Bluemix services (wdna-discovery and wdna-cloudant), can
 be found in the ``Services`` menu in Bluemix, and selecting the ``Service Credentials``
 option.
 
