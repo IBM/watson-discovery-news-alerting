@@ -19,12 +19,11 @@ const Home = () => (
       hasWordmark={true} />
     <Jumbotron
       serviceName='Discovery News Alerting'
-      repository='https://github.com/eerwitt/discovery-news'
+      repository='https://github.com/IBM/watson-discovery-news-alerting'
       documentation='https://www.ibm.com/watson/developercloud/doc/discovery/index.html'
       apiReference='https://www.ibm.com/watson/developercloud/discovery/api/v1/'
-      startInBluemix='https://bluemix.net/deploy?repository=https://github.com/eerwitt/discovery-news'
       version='Beta'
-      description="Monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Receive periodic updates via email or Slack related to a product or brand and how they're perceived in the News."
+      description="Monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Receive periodic updates via email related to a product or brand and how they're perceived in the News."
     />
     <Grid>
       <ExampleList />

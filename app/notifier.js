@@ -131,9 +131,10 @@ async function sendSubscriberSlacks() {
 // Periodically check for email or slack subscribers and send out their messages
 async function processSubscribers() {
   await sendSubscriberEmails()
-  await sendSubscriberSlacks()
+  // Not using Slack interface this release
+  // await sendSubscriberSlacks()
 
-  console.log('Sent all emails and Slacks, sleeping.')
+  console.log('Sent all emails, sleeping.')
 }
 
 // Simple long-polling solution to continually check the db for newly registered email addresses / Slack accounts
