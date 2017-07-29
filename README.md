@@ -128,7 +128,7 @@ $ bluemix cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host"
 $ bluemix cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
 ```
 
-Go to the URL route that is associated with the `watson-discovery-news-alerting` app in Bluemix the view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`. 
+Go to the URL route that is associated with the `watson-discovery-news-alerting` app in Bluemix to view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`. 
 
 # Sample output
 
