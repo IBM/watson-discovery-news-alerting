@@ -17,8 +17,7 @@ Alert tracking can be set up for the following areas:
 
 The journey highlights the steps required to build a front-end management interface to search Watson News and a back-end service which periodically sends alerts out related to customizable queries.
 
-** ARCHITECURE PICTURE **
-
+![](doc/source/images/architecture.png)
 
 ## Flow
 
