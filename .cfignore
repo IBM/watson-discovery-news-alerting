@@ -1,5 +1,4 @@
 node_modules
-bot/node_modules
-web/node_modules
+app/node_modules
 coverage
 .env

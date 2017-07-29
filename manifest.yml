@@ -26,5 +26,3 @@ applications:
   services:
   - wdna-cloudant
   - wdna-discovery
-env:
-  SLACK_API_TOKEN: placeholder
