@@ -1,7 +1,9 @@
 language: node_js
 node_js: 6
 cache: yarn
-before_script: cd app
+before_script: 
+  - cd app
+  - npm install eslint
 script: yarn lint
 
 # NOTE - npm tests not currently working
