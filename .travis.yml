@@ -4,6 +4,7 @@ cache: yarn
 before_script: 
   - cd app
   - npm install eslint
+  - npm install eslint-plugin-react
 script: yarn lint
 
 # NOTE - npm tests not currently working
