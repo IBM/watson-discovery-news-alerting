@@ -1,3 +1,5 @@
+/*eslint no-use-before-define: ["error", { "classes": false }]*/
+
 import uuid from 'uuid'
 
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from '../watson/constants'

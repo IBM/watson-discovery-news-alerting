@@ -4,6 +4,8 @@ import { createTrackDb } from './models/track'
 import { createAccessDb } from './models/access'
 
 console.log('Creating required databases')
+
+/*eslint no-unused-vars: ["error", { "args": "none" }]*/
 createTrackDb()
   .then((result) => {
     console.log('Track DB created')

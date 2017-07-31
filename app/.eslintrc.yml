@@ -8,7 +8,7 @@
     es6: true
 
   parserOptions:
-   ecmaVersion: 7
+   ecmaVersion: 8
    sourceType: "module"
    ecmaFeatures:
     jsx: true
@@ -61,7 +61,7 @@
     no-regex-spaces: 2
     no-sparse-arrays: 2
     no-unexpected-multiline: 2
-    no-unreachable: 2
+    no-unreachable: 1
     use-isnan: 2
     valid-jsdoc: 2
     valid-typeof: 2
@@ -75,7 +75,7 @@
     no-shadow-restricted-names: 2
     no-shadow: 2
     no-undef-init: 2
-    no-undef: 2
+    no-undef: 1
     no-undefined: 2
     no-unused-vars: 2
     no-use-before-define: 2

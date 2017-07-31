@@ -1,9 +1,11 @@
 language: node_js
-node_js: 7
-# cache: yarn
-# before_script: cd app
-# script: yarn lint
+node_js: 6
+cache: yarn
+before_script: cd app
+script: 
+- npm run lint
 
+# NOTE - npm tests not currently working
 # dist: trusty
 # sudo: required
 # node_js: 6

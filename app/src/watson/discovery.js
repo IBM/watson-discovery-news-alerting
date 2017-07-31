@@ -1,3 +1,5 @@
+/*eslint no-use-before-define: ["error", { "functions": false }]*/
+
 import { DiscoveryV1 } from 'watson-developer-cloud'
 import { getCredentials } from '../bluemix/config'
 import { leftPad } from '../models/frequency'
@@ -19,7 +21,7 @@ async function getFirstDiscoverNewsEnvironment(discovery) {
           reject(error)
         } else {
           for (const env of data.environments) {
-            if (env.name == 'Watson News Environment') {
+            if (env.name === 'Watson News Environment') {
               resolve(env)
             }
           }
@@ -30,14 +32,14 @@ async function getFirstDiscoverNewsEnvironment(discovery) {
   })
 }
 
-async function getFirstDiscoverNewsCollection(discovery, environment) {
+async function getFirstDiscoverNewsCollection(discovery, aEnvironment) {
   return new Promise( (resolve, reject) => {
-    discovery.getCollections({environment_id: environment.environment_id}, (error, data) => {
+    discovery.getCollections({environment_id: aEnvironment.environment_id}, (error, data) => {
       if (error) {
         reject(error)
       } else {
         for (const col of data.collections) {
-          if (col.name == 'watson_news') {
+          if (col.name === 'watson_news') {
             resolve(col)
           }
         }
@@ -85,7 +87,7 @@ function makeQuery(params) {
   })
 }
 
-export function getBrandAlerts(brandName, lastUpdatedAt=null) {
+export function getBrandAlerts(brandName, lastUpdatedAt = null) {
   const params = {
     query: `${encodeURIComponent(brandName)},enrichedTitle.entities.type:Company,enrichedTitle.entities.relevance>0.8,blekko.documentType:news`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -97,7 +99,7 @@ export function getBrandAlerts(brandName, lastUpdatedAt=null) {
   return makeQuery(params)
 }
 
-export function getProductAlerts(productName, lastUpdatedAt=null) {
+export function getProductAlerts(productName, lastUpdatedAt = null) {
   const params = {
     query: `${encodeURIComponent(productName)},blekko.documentType:news`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -109,7 +111,7 @@ export function getProductAlerts(productName, lastUpdatedAt=null) {
   return makeQuery(params)
 }
 
-export async function getRelatedBrands(brandName, lastUpdatedAt=null) {
+export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
   // Find more information about the brand to then explicitly exclude from queries
   const brandParams = {
     query: brandName,
@@ -127,7 +129,7 @@ export async function getRelatedBrands(brandName, lastUpdatedAt=null) {
     .reduce((acc, val) => acc.concat(val.taxonomy), [])
     .filter((taxonomy) => taxonomy.confident !== 'no' && taxonomy.score > 0.5)
     .reduce((acc, val) => {
-      const key = val.label.split('/').splice(1,2).join('/')
+      const key = val.label.split('/').splice(1, 2).join('/')
       let found = false
 
       // A weighted score where the score is a number between 0-1 and each is weighted with a 1 to allow the number
@@ -167,7 +169,7 @@ export async function getRelatedBrands(brandName, lastUpdatedAt=null) {
   return await makeQuery(params)
 }
 
-export function getPositiveProductAlerts(productName, lastUpdatedAt=null) {
+export function getPositiveProductAlerts(productName, lastUpdatedAt = null) {
   const params = {
     query: `${productName},docSentiment.type::positive`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news,(docSentiment.type::positive,docSentiment.score>0.5)',
@@ -179,7 +181,7 @@ export function getPositiveProductAlerts(productName, lastUpdatedAt=null) {
   return makeQuery(params)
 }
 
-export async function getStockAlerts(stockSymbol, lastUpdatedAt=null) {
+export async function getStockAlerts(stockSymbol, lastUpdatedAt = null) {
   const params = {
     query: `${stockSymbol},enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company`,
     filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
@@ -235,7 +237,7 @@ export function validQueryName(queryName) {
 }
 
 // Trying to avoid duck typing the names and using this case statement to make the correct query against Discover Service
-export async function getAlertsByQuery(query, keyword, lastUpdatedAt=null) {
+export async function getAlertsByQuery(query, keyword, lastUpdatedAt = null) {
   switch (query) {
     case BRAND_ALERTS:
       return await getBrandAlerts(keyword, lastUpdatedAt)

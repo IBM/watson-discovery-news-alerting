@@ -1,7 +1,7 @@
 import Cloudant from 'cloudant'
 import uuid from 'uuid'
 import { getCredentials } from '../bluemix/config'
-import { day, week, month, yesterday, lastWeek, lastMonth } from './frequency'
+import { yesterday, lastWeek, lastMonth } from './frequency'
 import { useCode } from './access'
 
 const dbName = 'track'

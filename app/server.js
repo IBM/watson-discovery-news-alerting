@@ -154,7 +154,7 @@ app.post('/api/1/subscription/', (req, res) => {
 // which is used to select all the subscriptions they currently have.
 app.get('/api/1/subscription/:token/', (req, res) => {
   const token = req.params.token
-  if (!token || token.search(/[^\w\-]/) != -1) {
+  if (!token || token.search(/[^\w\-]/) !== -1) {
     throw new TypeError('Invalid token provided.')
   }
   useCode(token)
@@ -168,10 +168,10 @@ app.post('/api/1/subscription/:token/unsubscribe/:id/', (req, res) => {
   const id = req.params.id
   // Each token/ID are UUID4s which have a common format
   // TODO move this logic into a shared function
-  if (!token || token.search(/[^\w\-]/) != -1) {
+  if (!token || token.search(/[^\w\-]/) !== -1) {
     throw new TypeError('Invalid token provided.')
   }
-  if (!id || id.search(/[^\w\-]/) != -1) {
+  if (!id || id.search(/[^\w\-]/) !== -1) {
     throw new TypeError('Invalid ID provided.')
   }
 
@@ -186,10 +186,10 @@ app.post('/api/1/subscription/:token/destination/:id/', (req, res) => {
   const id = req.params.id
 
   // NOTE further validation on input is recommended because the DB being used has no schema to do validation against
-  if (!token || token.search(/[^\w\-]/) != -1) {
+  if (!token || token.search(/[^\w\-]/) !== -1) {
     throw new TypeError('Invalid token provided.')
   }
-  if (!id || id.search(/[^\w\-]/) != -1) {
+  if (!id || id.search(/[^\w\-]/) !== -1) {
     throw new TypeError('Invalid ID provided.')
   }
   const destinationEmail = req.body.destinationEmail
