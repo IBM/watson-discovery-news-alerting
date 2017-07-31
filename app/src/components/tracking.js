@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { TextInput, Alert, Icon, ArrowBox, Colors } from 'watson-react-components/dist/components'
 import 'whatwg-fetch'
 
-// Logic to signup for email tracking from the website, this  isn't used by the Slack app
+// Logic to signup for email tracking from the website
 export class Tracking extends Component {
   constructor(props) {
     super(props)

@@ -8,8 +8,6 @@ import path from 'path'
 import { getBrandAlerts, getProductAlerts, getRelatedBrands, getPositiveProductAlerts, getStockAlerts } from './src/watson/discovery'
 import { track, subscriptionsByEmail, unsubscribe, updateDestination } from './src/models/track'
 import { useCode } from './src/models/access'
-import MainMessage, { Options, registerMessage, registerButtonClick } from './src/slack/message'
-import { search, trackSlack } from './src/slack/actions'
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './src/watson/constants'
 
 const app = express()
@@ -17,8 +15,6 @@ const port = process.env.PORT || 4391
 
 // The app posts in JSON
 app.use(bodyParser.json())
-// Slack posts as URL encoded bodies
-app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('build'))
 // A simple logger for express to give a request log
 app.use(morgan('combined'))
@@ -30,69 +26,6 @@ function genericError(res, error) {
   console.error(error)
   res.status(500).json({status: 'error'})
 }
-
-// Every Slack route must return everything within 3s including transport time, Slack is in us-west so keep in mind latency
-// NOTE if you're seeing timeouts in Slack, it may be as simple as the amount of time it took to have the message sent back
-// to Slacks servers, this is fairly common when running locally.
-
-// Button is clicked or menu item changed from Slack, this is the most common case
-app.post('/api/1/slack/button/', (req, res) => {
-  const message = registerButtonClick(req.body)
-  console.log(req.body)
-
-  if (message.shouldSearch()) {
-    console.log('Getting results')
-    // Give a loading message back to Slack in case the search takes a long time
-    message.updateLoadingResults()
-    const payload = JSON.parse(req.body.payload)
-    search(payload.response_url, message)
-  }
-
-  if (message.shouldSaveTracking()) {
-    console.log('Tracking')
-    // Saving in the background and clearing the message in Slack.
-    const payload = JSON.parse(req.body.payload)
-    trackSlack(
-      payload.user.id,
-      payload.channel.id,
-      payload.team.id,
-      payload.response_url,
-      message)
-
-    return res.json({text: 'You will receive updates as these results change.'})
-  }
-
-  res.json(message.toSlack())
-})
-
-// Populate the dynamic menus (only the keyword menu) in Slack
-app.post('/api/1/slack/menu/', (req, res) => {
-  const payload = JSON.parse(req.body.payload)
-  res.json(Options.toSlack(payload))
-})
-
-// Initial request from Slack when the registered command is executed, this ignores the text after the command
-//The req.body should be of this format:
-/*
- * { token: 'xxx',
- *   team_id: 'xxx',
- *   team_domain: 'xxx',
- *   channel_id: 'xxx',
- *   channel_name: 'directmessage',
- *   user_id: 'xxx',
- *   user_name: 'xxx',
- *   command: '/track',
- *   text: '',
- *   response_url: 'xxx' }
- */
-app.post('/api/1/slack/command/', (req, res) => {
-  const initialMessage = new MainMessage()
-  registerMessage(initialMessage)
-
-  // The response is used as the message Slack displays
-  res.json(initialMessage.toSlack())
-})
-// End Slack routes
 
 // The primary routes used to display information from Watson's Discovery Service, each route returns the raw response
 // from Watson's Discovery Service so that it's easier to move this logic.
@@ -138,8 +71,7 @@ app.get(`/api/1/track/${STOCK_ALERTS}/`, (req, res) => {
 // Subscription routes take care of some basic actions required for people to subscribe or unsubscribe to tracking
 // alerts.
 app.post('/api/1/subscription/', (req, res) => {
-  // By default, this route is used only for email based subscriptions. See the button handler above to see how the
-  // Slack subscriptions are handled.
+  // By default, this route is used only for email based subscriptions.
   const email = req.body.email
   const query = req.body.query
   const keyword = req.body.keyword
@@ -180,7 +112,7 @@ app.post('/api/1/subscription/:token/unsubscribe/:id/', (req, res) => {
     .catch((error) => genericError(res, error))
 })
 
-// Change the destination subscriptions are sent to, can be Slack and/or Email
+// Change the destination subscriptions are sent to.
 app.post('/api/1/subscription/:token/destination/:id/', (req, res) => {
   const token = req.params.token
   const id = req.params.id
@@ -193,9 +125,8 @@ app.post('/api/1/subscription/:token/destination/:id/', (req, res) => {
     throw new TypeError('Invalid ID provided.')
   }
   const destinationEmail = req.body.destinationEmail
-  const destinationSlack = req.body.destinationSlack
 
-  updateDestination(token, id, destinationEmail, destinationSlack)
+  updateDestination(token, id, destinationEmail)
     .then(() => res.json({status: 'success'}))
     .catch((error) => genericError(res, error))
 })

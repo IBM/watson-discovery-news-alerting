@@ -15,7 +15,6 @@ export class Subscription extends Component {
       loading: false,
       subscription: props.subscription,
       unsubscribed: false,
-      updatingSlack: false,
       updatingEmail: false,
       token: props.token
     }
@@ -52,9 +51,7 @@ export class Subscription extends Component {
       })
   }
 
-  // This one is a bit confusing, it's done this way to be easier to handle changing subscription of Email and Slack separately but
-  // using the same code path (or both).
-  changeDeliveryMethods(email, slack) {
+  changeDeliveryMethods(email) {
     const token = this.state.token
     const id = this.state.subscription._id
     // Avoiding editing the subscription directly and instead using a reference to it and resetting the state after
@@ -65,10 +62,6 @@ export class Subscription extends Component {
       this.setState({updatingEmail: true})
     }
 
-    if (slack) {
-      updatedSubscription.destinationSlack = ! updatedSubscription.destinationSlack
-      this.setState({updatingSlack: true})
-    }
     // Forcing the state to use the updatedSubscription to make certain that it displays correctly and there isn't any confusion in
     // state properties.
     this.setState({subscription: updatedSubscription})
@@ -79,7 +72,6 @@ export class Subscription extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        destinationSlack: updatedSubscription.destinationSlack,
         destinationEmail: updatedSubscription.destinationEmail
       })
     }
@@ -87,10 +79,6 @@ export class Subscription extends Component {
       .then(() => {
         if (email) {
           this.setState({updatingEmail: false})
-        }
-
-        if (slack) {
-          this.setState({updatingSlack: false})
         }
       })
       .catch((error) => {
@@ -102,10 +90,9 @@ export class Subscription extends Component {
   handleDestinationChange(e) {
     const value = e.target.value
 
-    const updatingSlack = value === 'slack'
     const updatingEmail = value === 'email'
 
-    this.changeDeliveryMethods(updatingEmail, updatingSlack)
+    this.changeDeliveryMethods(updatingEmail)
   }
 
   handleUnsubscribe(e) {
@@ -134,12 +121,6 @@ export class Subscription extends Component {
             onChange={this.handleDestinationChange}
             buttons={
               [
-                {
-                  value: 'slack',
-                  id: `slack-${this.state.subscription._id}`,
-                  text: this.state.updatingSlack ? 'Saving' : 'Slack',
-                  selected: this.state.subscription.destinationSlack
-                },
                 {
                   value: 'email',
                   id: `email-${this.state.subscription._id}`,
@@ -256,7 +237,7 @@ SubscriptionList.propTypes = {
 }
 
 // The main layout of the subscription page, the reason to not use a single layout for all pages is due to logic which renders certain
-// pages into a gif to be included in Email and Slack. This logic may not be used and so could be refactored.
+// pages into a gif to be included in Email. This logic may not be used and so could be refactored.
 export class CurrentSubscriptions extends Component {
   constructor(props) {
     super(props)

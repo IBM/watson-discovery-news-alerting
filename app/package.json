@@ -8,7 +8,6 @@
     "url": "https://github.com/IBM/watson-discovery-news-alerting.git"
   },
   "dependencies": {
-    "@slack/client": "^3.10.0",
     "autoprefixer": "7.1.0",
     "babel-cli": "^6.24.1",
     "babel-core": "6.24.1",

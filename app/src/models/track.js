@@ -61,7 +61,6 @@ export async function track(email, query, keyword, frequency) {
       keyword: keyword,
       subscribed: true,
       destinationEmail: true,
-      destinationSlack: false,
       frequency: frequency,
       lastUpdate: null
     },
@@ -70,28 +69,9 @@ export async function track(email, query, keyword, frequency) {
   return result
 }
 
-export async function trackSlack(slackUser, channel, team, query, keyword, frequency) {
-  const trackDb = cloudant.db.use(dbName)
-  const result = await trackDb.insert({
-      slackUser: slackUser,
-      channel: channel,
-      team: team,
-      query: query,
-      keyword: keyword,
-      subscribed: true,
-      destinationEmail: false,
-      destinationSlack: true,
-      frequency: frequency,
-      lastUpdate: null
-    },
-    uuid.v4())
-
-  return result
-}
-
-// Kinda crazy selector used with Cloudant to get a list of anyone subscribed to recieve and update which hasn't recieved one in
+// Kinda crazy selector used with Cloudant to get a list of anyone subscribed to receive an update which hasn't received one in
 // their chosen time frame (frequency)
-export async function getSubscribers(destinationEmail, destinationSlack) {
+export async function getSubscribers(destinationEmail) {
   console.log('Checking for subscribers of any frequency.')
   const trackDb = cloudant.db.use(dbName)
   const query = {
@@ -173,19 +153,12 @@ export async function getSubscribers(destinationEmail, destinationSlack) {
       })
   }
 
-  if (destinationSlack) {
-    query.selector.$and.push(
-      {
-        destinationSlack: destinationSlack
-      })
-  }
-
   const subscribers = await trackDb.find(query)
 
   return subscribers
 }
 
-// List the subscriptions for a certain email address (or Slack email)
+// List the subscriptions for a certain email address
 export async function subscriptionsByEmail(email) {
   const trackDb = cloudant.use(dbName)
 
@@ -218,14 +191,13 @@ export async function unsubscribe(code, id) {
   }
 }
 
-export async function updateDestination(code, id, destinationEmail, destinationSlack) {
+export async function updateDestination(code, id, destinationEmail) {
   const trackDb = cloudant.use(dbName)
   const accessEmail = await useCode(code)
   const subscription = await trackDb.get(id)
 
   if (subscription && subscription.email === accessEmail) {
     subscription.destinationEmail = destinationEmail
-    subscription.destinationSlack = destinationSlack
 
     await trackDb.insert(subscription)
   } else {
@@ -233,7 +205,7 @@ export async function updateDestination(code, id, destinationEmail, destinationS
   }
 }
 
-// A subscription Email or Slack has been sent, avoid sending at the incorrect frequency
+// A subscription Email has been sent, avoid sending at the incorrect frequency
 export async function subscriberUpdated(subscriber) {
   const trackDb = cloudant.use(dbName)
   subscriber.lastUpdate = new Date()
