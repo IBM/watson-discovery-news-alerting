@@ -12,7 +12,7 @@ export function getCredentials(requestedService) {
     }
   }
 
-  if (credentials == null) {
+  if (credentials === null) {
     throw new ReferenceError(`No credentials found for the ${requestedService} service.`)
   }
 

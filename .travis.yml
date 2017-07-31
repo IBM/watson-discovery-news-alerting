@@ -1,9 +1,13 @@
 language: node_js
-node_js: 7
-# cache: yarn
-# before_script: cd app
-# script: yarn lint
+node_js: 6
+cache: yarn
+before_script: 
+  - cd app
+  - npm install eslint
+  - npm install eslint-plugin-react
+script: yarn lint
 
+# NOTE - npm tests not currently working
 # dist: trusty
 # sudo: required
 # node_js: 6
