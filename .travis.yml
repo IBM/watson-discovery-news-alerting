@@ -2,8 +2,7 @@ language: node_js
 node_js: 6
 cache: yarn
 before_script: cd app
-script: 
-- npm run lint
+script: yarn lint
 
 # NOTE - npm tests not currently working
 # dist: trusty
