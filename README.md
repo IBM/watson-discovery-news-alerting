@@ -197,8 +197,6 @@ Error: listen EADDRINUSE :::{port}
 
 ### Bot
 * https://dashboard.ngrok.com/get-started
-* https://api.slack.com/docs/message-menus
-* https://api.slack.com/interactive-messages
 * http://phantomjs.org/quick-start.html
 * https://github.com/eugeneware/gifencoder
 * http://amirraminfar.com/phantomjs-node/

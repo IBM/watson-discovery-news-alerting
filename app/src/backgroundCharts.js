@@ -9,7 +9,7 @@ import fs from 'fs'
 // gifencoder
 
 // This logic is currently disabled and left in an unfunctioning state. This would generate a gif of any page fully rendered to be
-// sent via email or Slack.
+// sent via email.
 //
 // Commonly used to generate a gif of the chart displayed on the results page searching for alerts.
 const width = 600

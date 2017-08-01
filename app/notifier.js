@@ -5,8 +5,6 @@ import { StaticRouter } from 'react-router'
 import React from 'react'
 
 import nodemailer from 'nodemailer'
-// import { WebClient } from '@slack/client'
-// import { MainMessage } from './src/slack/message'
 import { Email } from './src/components/email'
 import { getAlertsByQuery } from './src/watson/discovery'
 import { getSubscribers, subscriberUpdated } from './src/models/track'
@@ -98,45 +96,13 @@ async function sendSubscriberEmails() {
   }
 }
 
-// // Sending to Slack is easier than by Email but it's fairly fire and forget. If it fails, it's ignored.
-// async function sendSubscriberSlacks() {
-//   // See README.md on where this token is generated
-//   const token = process.env.SLACK_API_TOKEN
-//   if (!token) {
-//     throw new Error('This process requires a SLACK_API_TOKEN to be set in the environment.')
-//   }
-
-//   const slack = new WebClient(token)
-//   // Restricting the subscriber list to people who have opt'ed in to receive Slack notifications
-//   const results = await getSubscribers(false, true)
-//   for (const subscriber of results.docs) {
-//     const response = await getAlertsByQuery(subscriber.query, subscriber.keyword)
-//     if (response && response.results.length > 0) {
-//       slack.chat.postMessage(
-//         subscriber.slack,  // TODO check that this works via the email as well, hasn't been tested
-//         'Updates from Watson',
-//         MainMessage.toSlack(),
-//         (err, res) => {
-//           if (err) {
-//             console.error('Error sending slack notifications to %s: ', subscriber.slack, err)
-//           } else {
-//             console.log('Slack sent: %s', res)
-//           }
-//         })
-//     }
-//   }
-// }
-
-// Periodically check for email or slack subscribers and send out their messages
+// Periodically check for email and send out their messages
 async function processSubscribers() {
   await sendSubscriberEmails()
-  // Not using Slack interface this release
-  // await sendSubscriberSlacks()
-
   console.log('Sent all emails, sleeping.')
 }
 
-// Simple long-polling solution to continually check the db for newly registered email addresses / Slack accounts
+// Simple long-polling solution to continually check the db for newly registered email addresses
 export function run() {
   processSubscribers()
     .then(() => setTimeout(run, 60 * 1000 /* 1 minute */))

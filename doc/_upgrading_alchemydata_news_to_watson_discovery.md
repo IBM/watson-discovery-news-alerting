@@ -8,7 +8,7 @@ Daily, the amount of news being reported is overwhelming without context. There 
 
 Certain attributes I've found indispensable, like the `taxonomy`, `blekko`, `disambiguated` and the `alchemyapi_text`. Further information on these can be found on [Watson's Natural Language Understanding](https://www.ibm.com/watson/developercloud/doc/natural-language-understanding/) documentation.
 
-The example application is built to monitor the news and highlight important events that it will push updates to me about using either my Slack account, Email address, or both. It uses advanced features which are now available to use from Watson's Discovery Service.
+The example application is built to monitor the news and highlight important events that it will push updates to me about using my Email address. It uses advanced features which are now available to use from Watson's Discovery Service.
 
 ## Reasons to upgrade
 
