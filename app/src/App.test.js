@@ -31,7 +31,6 @@ it('renders without crashing', () => {
 });
 
 it('renders with some expected text', () => {
-  const div = document.createElement('div');
   let wrapper = mount(
     <BrowserRouter>
       <App />
@@ -40,7 +39,6 @@ it('renders with some expected text', () => {
 });
 
 it('shallow test', () => {
-  const div = document.createElement('div');
   let wrapper = shallow(<App />);
   expect(wrapper.text()).to.contain('<Switch />');
 });
