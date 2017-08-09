@@ -257,19 +257,14 @@ export async function getAlertsByQuery(query, keyword, lastUpdatedAt = null) {
   switch (query) {
     case BRAND_ALERTS:
       return await getBrandAlerts(keyword, lastUpdatedAt)
-      break
     case PRODUCT_ALERTS:
       return await getProductAlerts(keyword, lastUpdatedAt)
-      break
     case RELATED_BRANDS:
       return await getRelatedBrands(keyword, lastUpdatedAt)
-      break
     case POSITIVE_PRODUCT_ALERTS:
       return await getPositiveProductAlerts(keyword, lastUpdatedAt)
-      break
     case STOCK_ALERTS:
       return await getStockAlerts(keyword, lastUpdatedAt)
-      break
     default:
       console.error('Unknown query! %s', query)
       break

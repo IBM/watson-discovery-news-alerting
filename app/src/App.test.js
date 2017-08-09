@@ -15,10 +15,30 @@
  */
 
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
+import { expect } from 'chai';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render((
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>), div);
+});
+
+it('renders with some expected text', () => {
+  let wrapper = mount(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>);
+  expect(wrapper.text()).to.contain('Discovery News Alerting');
+});
+
+it('shallow test', () => {
+  let wrapper = shallow(<App />);
+  expect(wrapper.text()).to.contain('<Switch />');
 });
