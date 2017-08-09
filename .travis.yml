@@ -4,4 +4,4 @@ cache: yarn
 before_script: 
   - cd app
   - yarn install
-script: yarn lint
+script: yarn test && yarn lint
