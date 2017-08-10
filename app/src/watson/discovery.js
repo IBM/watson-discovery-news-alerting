@@ -8,48 +8,6 @@ import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, 
 
 // NOTE, due to the use of async/await, this file is not intended to be imported by the front-end
 
-// These globals are used to cache responses for the requested environment/collection. These might be null but currently are
-// only accessed from makeQuery, if you experience a null pointer accessing them then please move them into some protected
-// getter logic which will get the proper environment if it isn't set.
-let environment = null
-let collection = null
-
-async function getFirstDiscoverNewsEnvironment(discovery) {
-  return new Promise( (resolve, reject) => {
-      discovery.getEnvironments({}, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          for (const env of data.environments) {
-            if (env.name === 'Watson News Environment') {
-              resolve(env)
-            }
-          }
-
-          reject("No environment named 'Watson News Environment' found")
-        }
-      })
-  })
-}
-
-async function getFirstDiscoverNewsCollection(discovery, aEnvironment) {
-  return new Promise( (resolve, reject) => {
-    discovery.getCollections({environment_id: aEnvironment.environment_id}, (error, data) => {
-      if (error) {
-        reject(error)
-      } else {
-        for (const col of data.collections) {
-          if (col.name === 'watson_news') {
-            resolve(col)
-          }
-        }
-
-        reject("No collection named watson_news found")
-      }
-    })
-  })
-}
-
 // TODO investigate escaping queries before sending to the discovery service
 // This wrapper sets the discover service up and connects to the proper discovery environment and collection before making a query.
 //
@@ -60,21 +18,15 @@ function makeQuery(params) {
   const discovery = new DiscoveryV1({
     username: credentials.username,
     password: credentials.password,
-    version_date: '2016-11-07'
+    version_date: '2017-08-01'
   })
 
   // Using a Promise to allow the use of async/await in other code, this allows calls without callback hell which is important in
   // finding the correct collection, it requires both the environment and a discovery instance.
   return new Promise(async (resolve, reject) => {
-    // In order to query the news we need to find it in the list of collections for each environment.
-    // Storing these as module global because looking them up requires two subsequent web requests.
-    if (!environment || !collection) {
-      environment = await getFirstDiscoverNewsEnvironment(discovery)
-      collection = await getFirstDiscoverNewsCollection(discovery, environment)
-    }
-
-    params.environment_id = environment.environment_id
-    params.collection_id = collection.collection_id
+    // Watson News now uses pre-defined env and coll id values
+    params.environment_id = 'system'
+    params.collection_id = 'news'
 
     // The SDK isn't setup for promises, wrapping in one so that we may use async/await with other calls to these functions
     discovery.query(params, (error, data) => {
@@ -89,10 +41,10 @@ function makeQuery(params) {
 
 export function getBrandAlerts(brandName, lastUpdatedAt = null) {
   const params = {
-    query: `${encodeURIComponent(brandName)},enrichedTitle.entities.type:Company,enrichedTitle.entities.relevance>0.8,blekko.documentType:news`,
-    filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
-    return: 'alchemyapi_text,title,url'
+    query: `${encodeURIComponent(brandName)},enriched_title.entities.type:Company,enriched_title.entities.relevance>0.8,source_type:mainstream`,
+    filter: 'language:en,source_type:mainstream',
+    aggregation: 'timeslice(crawl_date, 1day, America/Los_Angeles)',
+    return: 'text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)
@@ -101,10 +53,10 @@ export function getBrandAlerts(brandName, lastUpdatedAt = null) {
 
 export function getProductAlerts(productName, lastUpdatedAt = null) {
   const params = {
-    query: `${encodeURIComponent(productName)},blekko.documentType:news`,
-    filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
-    return: 'alchemyapi_text,title,url'
+    query: `${encodeURIComponent(productName)},source_type:mainstream`,
+    filter: 'language:en,source_type:mainstream',
+    aggregation: 'timeslice(crawl_date, 1day, America/Los_Angeles)',
+    return: 'text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)
@@ -115,9 +67,9 @@ export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
   // Find more information about the brand to then explicitly exclude from queries
   const brandParams = {
     query: brandName,
-    filter: `blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news`,
+    filter: `language:en,source_type:mainstream`,
     count: 50,
-    return: 'taxonomy'
+    return: 'enriched_text.categories'
   }
   const brandResults = await makeQuery(brandParams)
 
@@ -126,8 +78,8 @@ export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
   //
   // In the end, this is chosing the top taxonomy found in the list of results for the brandname
   const taxonomies = brandResults.results
-    .reduce((acc, val) => acc.concat(val.taxonomy), [])
-    .filter((taxonomy) => taxonomy.confident !== 'no' && taxonomy.score > 0.5)
+    .reduce((acc, val) => acc.concat(val.enriched_text.categories), [])
+    .filter((taxonomy) => taxonomy.score > 0.5)
     .reduce((acc, val) => {
       const key = val.label.split('/').splice(1, 2).join('/')
       let found = false
@@ -147,7 +99,7 @@ export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
       return acc
     }, [])
     .sort((a, b) => b.count - a.count)
-    .map((taxonomyCount) => `(taxonomy.label:/${taxonomyCount.label},taxonomy.score>0.5,taxonomy.confident::!no)`)
+    .map((taxonomyCount) => `(enriched_text.categories.label:/${taxonomyCount.label},enriched_text.categories.score>0.5)`)
 
   // First attempt was to use the disambiguated name but that rarely results in anything, because many entities don't have
   // a disambiguated value
@@ -160,9 +112,9 @@ export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
 
   const params = {
     query: taxonomies.splice(0, 1).join('|'),
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
-    filter: `blekko.lang:en,enrichedTitle.language:english,(enrichedTitle.entities.type:Company,enrichedTitle.entities.relevance>0.8,enrichedTitle.entities.text:!${brandName}),entities.disambiguated.name:!${brandName},blekko.documentType:news`,
-    return: 'alchemyapi_text,title,url'
+    aggregation: 'timeslice(crawl_date, 1day, America/Los_Angeles)',
+    filter: `language:en,(enriched_title.entities.type:Company,enriched_title.entities.relevance>0.8,enriched_title.entities.text:!${brandName}),enriched_text.entities.disambiguation.name:!${brandName},source_type:mainstream`,
+    return: 'text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)
@@ -171,10 +123,10 @@ export async function getRelatedBrands(brandName, lastUpdatedAt = null) {
 
 export function getPositiveProductAlerts(productName, lastUpdatedAt = null) {
   const params = {
-    query: `${productName},docSentiment.type::positive`,
-    filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news,(docSentiment.type::positive,docSentiment.score>0.5)',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
-    return: 'alchemyapi_text,title,url'
+    query: `${productName},enriched_text.sentiment.document.label::positive`,
+    filter: 'language:en,source_type:mainstream,(enriched_text.sentiment.document.label::positive,enriched_text.sentiment.document.score>0.5)',
+    aggregation: 'timeslice(crawl_date, 1day, America/Los_Angeles)',
+    return: 'text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)
@@ -183,11 +135,11 @@ export function getPositiveProductAlerts(productName, lastUpdatedAt = null) {
 
 export async function getStockAlerts(stockSymbol, lastUpdatedAt = null) {
   const params = {
-    query: `${stockSymbol},enrichedTitle.relations.action.verb.text:[downgrade|upgrade],enrichedTitle.relations.subject.entities.type::Company`,
-    filter: 'blekko.lang:en,enrichedTitle.language:english,blekko.documentType:news',
-    aggregation: 'timeslice(blekko.chrondate, 1day, America/Los_Angeles)',
+    query: `${stockSymbol},enriched_text.semantic_roles.action.verb.text:[downgrade|upgrade],enriched_title.semantic_roles.subject.entities.type::Company`,
+    filter: 'language:en,source_type:mainstream',
+    aggregation: 'timeslice(crawl_date, 1day, America/Los_Angeles)',
     count: 50,
-    return: 'alchemyapi_text,title,url'
+    return: 'text,title,url'
   }
 
   addDateFilter(params, lastUpdatedAt)

@@ -50,20 +50,6 @@ and [yarn](https://yarnpkg.com) installed. Make sure to have the
 [Bluemix CLI](https://console.bluemix.net/docs/cli/index.html) tool installed. You will need an
 account with [Bluemix account](https://console.ng.bluemix.net/registration/) to deploy the application.
 
-## Testing
-
-Each project is tested separately.
-
-```
-cd app
-npm test
-```
-
-```
-cd tracker
-npm test
-```
-
 ## Coding style guidelines
 
 The project is using eslint to manage coding style.
