@@ -3,7 +3,7 @@ memory: 256MB
 declared-services:
   wdna-discovery:
     label: discovery
-    plan: free
+    plan: lite
   wdna-cloudant:
     label: cloudantNoSQLDB
     plan: Lite
