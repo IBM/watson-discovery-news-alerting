@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ibm/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/ibm/watson-discovery-news-alerting)
+[![Build Status](https://travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
 
 # Watson Discovery News Alerting 
 
