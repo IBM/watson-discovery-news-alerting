@@ -46,7 +46,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 # Watch the Video
 
-[![](http://img.youtube.com/vi/N-HaIpPGde0/0.jpg)](https://youtu.be/N-HaIpPGde0)
+Coming Soon!
 
 # Steps
 
@@ -187,6 +187,9 @@ Error: listen EADDRINUSE :::{port}
 [Apache 2.0](LICENSE)
 
 ## Useful Links
+
+### Video: How we created Watson News Queries for this journey 
+[![](http://img.youtube.com/vi/N-HaIpPGde0/0.jpg)](https://youtu.be/N-HaIpPGde0)
 
 ### Discovery Service
 * https://www.ibm.com/watson/developercloud/doc/discovery/query-reference.html

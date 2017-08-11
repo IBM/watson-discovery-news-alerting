@@ -63,7 +63,7 @@ export class ExampleList extends Component {
           header: 'Stock Alerts',
           url: `/track/${STOCK_ALERTS}/`,
           body: (
-            <p>Markets change quickly when news breaks, using Watson you can keep track of early warning signs of your stocks being upgraded or downgraded by exports.</p>
+            <p>Markets change quickly when news breaks, using Watson you can keep track of early warning signs of your stocks being upgraded or downgraded by experts.</p>
           )
         }
       ]
