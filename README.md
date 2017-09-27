@@ -50,8 +50,6 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 # Steps
 
-You can choose to ``Deploy to Bluemix`` **OR** run locally. In either case, you will need to:
-
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create Bluemix services](#2-create-watson-services-with-ibm-bluemix)
 
