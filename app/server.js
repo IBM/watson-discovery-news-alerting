@@ -26,6 +26,8 @@ import { track, subscriptionsByEmail, unsubscribe, updateDestination } from './s
 import { useCode } from './src/models/access'
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './src/watson/constants'
 
+require('metrics-tracker-client').track();
+
 const app = express()
 const port = process.env.PORT || 4391
 

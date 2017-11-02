@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
+![Bluemix Deployments](https://metrics-tracker.mybluemix.net/stats/538ed648bda50b9f22d64a8be817840f/badge.svg)
 
 # Watson Discovery News Alerting 
 
@@ -179,6 +180,28 @@ If the port is unavailable, you will see the following error:
 ```
 Error: listen EADDRINUSE :::{port}
 ```
+
+# Privacy Notice
+
+Sample web applications that include this package may be configured to track deployments to [IBM Bluemix](https://www.bluemix.net/) and other Cloud Foundry platforms. The following information is sent to a [Deployment Tracker](https://github.com/IBM/metrics-collector-service) service on each deployment:
+
+* Node.js package version
+* Node.js repository URL
+* Application Name (`application_name`)
+* Application GUID (`application_id`)
+* Application instance index number (`instance_index`)
+* Space ID (`space_id`) or OS username
+* Application Version (`application_version`)
+* Application URIs (`application_uris`)
+* Cloud Foundry API (`cf_api`)
+* Labels and names of bound services
+* Number of instances for each bound service and associated plan information
+* Metadata in the repository.yaml file
+
+This data is collected from the `package.json` and `repository.yaml` file in the sample application and the `VCAP_APPLICATION` and `VCAP_SERVICES` environment variables in IBM Bluemix and other Cloud Foundry platforms. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples, so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
+
+## Disabling Deployment Tracking
+Deployment tracking can be disabled by removing the `require("metrics-tracker-client").track();` line from [app/server.js](app/server.js#L29).
 
 # License
 
