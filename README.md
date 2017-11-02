@@ -201,7 +201,7 @@ Sample web applications that include this package may be configured to track dep
 This data is collected from the `package.json` and `repository.yaml` file in the sample application and the `VCAP_APPLICATION` and `VCAP_SERVICES` environment variables in IBM Bluemix and other Cloud Foundry platforms. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples, so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
 
 ## Disabling Deployment Tracking
-Deployment tracking can be disabled by removing the `require("metrics-tracker-client").track();` line from **app/server.js**.
+Deployment tracking can be disabled by removing the `require("metrics-tracker-client").track();` line from [app/server.js](app/server.js#L29).
 
 # License
 
