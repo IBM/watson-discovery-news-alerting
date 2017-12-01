@@ -140,7 +140,7 @@ export class Tracking extends Component {
                 <p className="base--p">
                 A valid email address is required to track these alerts.
                 </p>
-            </ArrowBox> 
+            </ArrowBox>
             <TextInput
               id='emailAddress'
               name='emailAddress'
