@@ -90,7 +90,7 @@ $ yarn run start-notifier
 
 ## Deploy and run the application on IBM Cloud
 
-To deploy to IBM Cloud make sure you have Bluemix CLI tool installed. Then run the following commands to connect it with IBM Cloud and login with your IBM Cloud credentials.
+To deploy to IBM Cloud make sure you have IBM Cloud CLI tool installed. Then run the following commands to connect it with IBM Cloud and login with your IBM Cloud credentials.
 
 ```sh
 $ cd watson-discovery-news-alerting
@@ -179,7 +179,7 @@ Error: listen EADDRINUSE :::{port}
 
 # Privacy Notice
 
-If using the Deploy to IBM Cloud button some metrics are tracked, the following information is sent to a [Deployment Tracker](https://github.com/IBM-Bluemix/cf-deployment-tracker-service) service
+If using the Deploy to IBM Cloud button some metrics are tracked, the following information is sent to a [Deployment Tracker](https://github.com/IBM-IBM Cloud/cf-deployment-tracker-service) service
 on each deployment:
 
 * Node.js package version
