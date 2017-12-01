@@ -9,7 +9,7 @@ Important directories and files which are used by this project.
 ├── README.md # Overview on the project and how to get started
 ├── MAINTAINERS.md # Project maintainers
 ├── ACKNOWLEDGEMENTS.md # Community
-├── manifest.yml # Configuration used to deploy app to Bluemix
+├── manifest.yml # Configuration used to deploy app to IBM Cloud
 ├── Procfile # file used by bluemix to start the web server
 ├── app # directory for application
 │   ├── server.js     # main application

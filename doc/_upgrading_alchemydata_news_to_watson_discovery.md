@@ -78,8 +78,8 @@ An example cache key would be a one-way hash of the `query`, `filter`, `aggregat
 
 ## Security
 
-AlchemyData News API required keeping track of a single API access key which could be used externally to query the data set. That worked well but the upgraded Watson Discovery Service News Collection uses the same authentication setup as other services in Bluemix. The benefit here is that it's easy to configure and they provide multiple modules built to get the access credentials required.
+AlchemyData News API required keeping track of a single API access key which could be used externally to query the data set. That worked well but the upgraded Watson Discovery Service News Collection uses the same authentication setup as other services in IBM Cloud. The benefit here is that it's easy to configure and they provide multiple modules built to get the access credentials required.
 
-## Bluemix
+## IBM Cloud
 
-Hosting both the application accessing Watson Discovery Service News Collection and the application querying it with Bluemix allowed seamless integration. All the environment is automatically setup properly to allow access between the features rapidly. Using the `manifest.yml`, the relationship between the multiple services is setup for further uses.
+Hosting both the application accessing Watson Discovery Service News Collection and the application querying it with IBM Cloud allowed seamless integration. All the environment is automatically setup properly to allow access between the features rapidly. Using the `manifest.yml`, the relationship between the multiple services is setup for further uses.

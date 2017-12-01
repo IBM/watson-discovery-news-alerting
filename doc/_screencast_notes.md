@@ -4,7 +4,7 @@ The goal of this [screencast](https://youtu.be/N-HaIpPGde0) is to highlight how 
 
 ## Opening the Discovery Query Tool
 
-Open Bluemix to the services list: [http://console.bluemix.net/services/](http://console.bluemix.net/services/)
+Open IBM Cloud to the services list: [http://console.bluemix.net/services/](http://console.bluemix.net/services/)
 
 1. Select your Discovery service
 1. Click launch tool
