@@ -31,7 +31,7 @@ import fs from 'fs'
 const width = 600
 const height = 325
 const encoder = new GIFEncoder(width, height)
- 
+
 // https://stackoverflow.com/a/36247412/1589147
 const leftPad = (s, c, n) => {
   s = s.toString()

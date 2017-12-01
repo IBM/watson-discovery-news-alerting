@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
 ![IBM Cloud Deployments](https://metrics-tracker.mybluemix.net/stats/538ed648bda50b9f22d64a8be817840f/badge.svg)
 
-# Watson Discovery News Alerting 
+# Watson Discovery News Alerting
 
 In this Code Pattern, we will build a Node.js web application that will use the Watson Discovery Service to access Watson Discovery News.
 
@@ -123,7 +123,7 @@ $ bluemix cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host"
 $ bluemix cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
 ```
 
-Go to the URL route that is associated with the `watson-discovery-news-alerting` app in IBM Cloud to view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`. 
+Go to the URL route that is associated with the `watson-discovery-news-alerting` app in IBM Cloud to view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`.
 
 # Sample output
 

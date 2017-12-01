@@ -1,7 +1,7 @@
 language: node_js
 node_js: 6
 cache: yarn
-before_script: 
+before_script:
   - cd app
   - yarn install
 script: yarn test && yarn lint
