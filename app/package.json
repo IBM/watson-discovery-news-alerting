@@ -33,7 +33,6 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.28.0",
     "jest": "20.0.3",
-    "metrics-tracker-client": "*",
     "morgan": "^1.8.2",
     "nodemailer": "^4.0.1",
     "object-assign": "4.1.1",
