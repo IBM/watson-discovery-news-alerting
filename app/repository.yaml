@@ -1,9 +1,0 @@
-id: watson-discovery-news-alerting
-event_id: web
-event_organizer: dev-journeys
-runtimes:
-  - Cloud Foundry
-services:
-  - Discovery
-  - Cloudant NoSQL DB
-language: nodejs
