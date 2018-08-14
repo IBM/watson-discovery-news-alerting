@@ -1,5 +1,4 @@
 ---
-memory: 256MB
 declared-services:
   wdna-discovery:
     label: discovery
@@ -11,6 +10,7 @@ applications:
 - path: ./app
   name: watson-discovery-news-alerting
   buildpack: sdk-for-nodejs
+  memory: 256MB
   instances: 1
   random-route: false
   services:
@@ -22,6 +22,7 @@ applications:
   no-route: true
   health-check-type: process
   buildpack: sdk-for-nodejs
+  memory: 256MB
   instances: 1
   services:
   - wdna-cloudant

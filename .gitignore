@@ -1,3 +1,6 @@
+# Virtual Studio code
+.vscode/
+
 # misc
 *.swp
 .DS_Store

@@ -75,7 +75,7 @@ $ yarn
 ```
 $ cp .env.sample .env
 ```
-4. Edit the `.env` file and enter the Watson Discovery credentials and SMTP Mail settings if you wish to use the tracking feature.
+4. Edit the `.env` file and enter your Watson Discovery and Cloudant NoSQL DB credentials. Add SMTP Mail settings if you wish to use the tracking feature.
 5. Build and start the main app.
 ```
 $ yarn run build
@@ -89,20 +89,20 @@ $ yarn run start-notifier
 
 ## Deploy and run the application on IBM Cloud
 
-To deploy to IBM Cloud make sure you have IBM Cloud CLI tool installed. Then run the following commands to connect it with IBM Cloud and login with your IBM Cloud credentials.
+To deploy to IBM Cloud make sure you have the IBM Cloud CLI tool installed. Then run the following commands to connect it with IBM Cloud and login with your IBM Cloud credentials.
 
 ```sh
 $ cd watson-discovery-news-alerting
-$ bluemix login
+$ ibmcloud login
 ```
 
-Then to deploy just run the following command and it will push the code, deploy it to a server and run it.
+Run the following command to deploy and run the alerting and notifier apps on the IBM Cloud. It will automatically connect to your existing Watson Discovery and Cloudant NoSQL DB services **if** your service names match the names specified in the `manifest.yml` file.
 
 ```sh
-$ bluemix cf push
+$ ibmcloud cf push
 ```
 
-If the `cf push` command complains that the application name is already taken, change the lines in the `manifest.yml` to have a custom application name specific for your setup:
+If the `ibmcloud cf push` command complains that the application name is already taken, change the lines in the `manifest.yml` to have a custom application name specific for your setup:
 
 ```yaml
 ...
@@ -118,8 +118,8 @@ Two IBM Cloud applications should be created and running:
 Set the environment variables required for each the notifier service to perform properly. Use the values unique to your setup:
 
 ```sh
-$ bluemix cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host":"smtp.gmail.com","user":"xxx@gmail.com","pass":"xxx","fromEmail":"xxx@gmail.com"}'
-$ bluemix cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
+$ ibmcloud cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host":"smtp.gmail.com","user":"xxx@gmail.com","pass":"xxx","fromEmail":"xxx@gmail.com"}'
+$ ibmcloud cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
 ```
 
 Go to the URL route that is associated with the `watson-discovery-news-alerting` app in IBM Cloud to view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`.
@@ -161,8 +161,6 @@ Background process which periodically sends updates to email.
 # Troubleshooting
 
 * Setting environment variables for a local run in `.env` config file
-
-> NOTE: This only needs to be set if the application is running locally.
 
 The credentials for IBM Cloud services (wdna-discovery and wdna-cloudant) can
 be found in the ``Services`` menu in IBM Cloud, and selecting the ``Service Credentials``
