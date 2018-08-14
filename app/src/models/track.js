@@ -14,20 +14,13 @@
  * the License.
  */
 
-import Cloudant from 'cloudant'
 import uuid from 'uuid'
-import { getCredentials } from '../bluemix/config'
+import { getCloudantService } from '../bluemix/config'
 import { yesterday, lastWeek, lastMonth } from './frequency'
 import { useCode } from './access'
 
 const dbName = 'track'
-const credentials = getCredentials('cloudantNoSQLDB')
-
-const cloudant = Cloudant({
-  account: credentials.username,
-  password: credentials.password,
-  plugin: 'promises'
-})
+const cloudant = getCloudantService()
 
 // Create the "Tracking" DB which is where all the subscribers are stored
 // TODO I'd prefer this named Subscribers so that it's clear what the contents of the DB are.

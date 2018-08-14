@@ -14,19 +14,12 @@
  * the License.
  */
 
-import Cloudant from 'cloudant'
 import uuid from 'uuid'
-import { getCredentials } from '../bluemix/config'
+import { getCloudantService } from '../bluemix/config'
 import { today, tomorrow } from './frequency'
 
 const dbName = 'access'
-const credentials = getCredentials('cloudantNoSQLDB')
-
-const cloudant = Cloudant({
-  account: credentials.username,
-  password: credentials.password,
-  plugin: 'promises'  // Using the promises plugin to allow use of async/await
-})
+const cloudant = getCloudantService()
 
 // Create the access database (storing codes/tokens) and establishing its indexes
 export async function createAccessDb() {

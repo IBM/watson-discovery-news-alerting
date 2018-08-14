@@ -16,8 +16,11 @@
 
 /*eslint no-use-before-define: ["error", { "functions": false }]*/
 
+// require('dotenv').config({
+//   silent: true
+// });
+
 import { DiscoveryV1 } from 'watson-developer-cloud'
-import { getCredentials } from '../bluemix/config'
 import { leftPad } from '../models/frequency'
 
 import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, STOCK_ALERTS } from './constants'
@@ -29,12 +32,8 @@ import { BRAND_ALERTS, PRODUCT_ALERTS, RELATED_BRANDS, POSITIVE_PRODUCT_ALERTS, 
 //
 // All the params are passed straight through.
 function makeQuery(params) {
-  const credentials = getCredentials('discovery')
-
   const discovery = new DiscoveryV1({
-    username: credentials.username,
-    password: credentials.password,
-    version_date: '2017-08-01'
+    version: '2017-08-01'
   })
 
   // Using a Promise to allow the use of async/await in other code, this allows calls without callback hell which is important in

@@ -14,23 +14,59 @@
  * the License.
  */
 
-import cfenv from 'cfenv'
+require('dotenv').config({
+  silent: true
+});
 
-// Wrapper to get the service by label (Cloudant or Discovery) to avoid duplicating this logic in multiple places
-export function getCredentials(requestedService) {
-  const appEnv = cfenv.getAppEnv()
+import Cloudant from '@cloudant/cloudant'
 
-  const services = appEnv.getServices()
-  let credentials = null
-  for (let serviceName of Object.keys(services)) {
-    if (services[serviceName].label === requestedService) {
-      credentials = services[serviceName].credentials
-    }
+// Wrapper to get the Cloudant service
+export function getCloudantService() {
+
+  var credentials = {
+    use_iam: false,
+    iam_apikey: '',
+    iam_username: '',
+    username: '',
+    password: ''
   }
 
-  if (credentials === null) {
-    throw new ReferenceError(`No credentials found for the ${requestedService} service.`)
+  if (typeof process.env.CLOUDANT_IAM_APIKEY !== 'undefined' && process.env.CLOUDANT_IAM_APIKEY !== '<add_cloudant_iam_apikey>') {
+    // use IAM creds
+    credentials.use_iam = true
+    credentials.iam_apikey = process.env.CLOUDANT_IAM_APIKEY
+    credentials.iam_username = process.env.CLOUDANT_IAM_USERNAME
+    console.log("credentials.iam_apikey: " + credentials.iam_apikey)
+    console.log("credentials.iam_username: " + credentials.iam_username)
+  } else {
+    credentials.username = process.env.CLOUDANT_USERNAME
+    credentials.password = process.env.CLOUDANT_PASSWORD
+    console.log("credentials.username: " + credentials.username)
+    console.log("credentials.password: " + credentials.password)
   }
 
-  return credentials
+  if (credentials.use_iam) {
+    // use IAM creds
+    var cloudant = new Cloudant({
+      account: credentials.iam_username,
+      plugins: [
+        'promises',
+        {
+          iamauth: {
+            iamApiKey: credentials.iam_apikey
+          }
+        }
+      ],
+      plugin: 'promises'  // Using the promises plugin to allow use of async/await
+    })
+  } else {
+    // use traditional uname/pwd
+    cloudant = Cloudant({
+      account: credentials.username,
+      password: credentials.password,
+      plugin: 'promises'  // Using the promises plugin to allow use of async/await
+    })
+  }
+
+  return cloudant
 }
