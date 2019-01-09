@@ -31,7 +31,7 @@ The Code Pattern highlights the steps required to build a front-end management i
 # Included components
 
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): A cognitive search and content analytics engine for applications to identify patterns, trens, and actionable insights.
-* [Cloudant NoSQL DB for IBM Cloud](https://console.bluemix.net/docs/services/Cloudant/cloudant.html#overview): A fully managed data layer designed for modern web and mobile applications that leverages a flexible JSON schema.
+* [Cloudant NoSQL DB for IBM Cloud](https://cloud.ibm.com/docs/services/Cloudant/cloudant.html#overview): A fully managed data layer designed for modern web and mobile applications that leverages a flexible JSON schema.
 
 # Featured technologies
 
@@ -60,8 +60,8 @@ $ git clone https://github.com/ibm/watson-discovery-news-alerting
 
 Create the following service:
 
-  * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery) - name the service `wdna-discovery`
-  * [**Cloudant NoSQL DB**](https://console.bluemix.net/catalog/services/cloudant-nosql-db) - name the service `wdna-cloudant`
+  * [**Watson Discovery**](https://cloud.ibm.com/catalog/services/discovery) - name the service `wdna-discovery`
+  * [**Cloudant NoSQL DB**](https://cloud.ibm.com/catalog/services/cloudant-nosql-db) - name the service `wdna-cloudant`
 
 ## Run the application locally
 
@@ -181,7 +181,7 @@ Error: listen EADDRINUSE :::{port}
 * [Cognitive discovery architecture](https://www.ibm.com/cloud/garage/content/architecture/cognitiveDiscoveryDomain): Learn how this Code Pattern fits into the Cognitive discovery Reference Architecture.
 * [Watson Discovery Service Updates for News and NLP](https://www.ibm.com/blogs/bluemix/2017/08/watson-discovery-service-updates-news-nlp/): Learn what enhancements are being made to the service.
 * [Watson Discovery Demo](https://discovery-news-demo.mybluemix.net/?cm_sp=dw-bluemix-_-code-_-devcenter): Unlock hidden value in data to find answers, monitor trends and surface patterns.
-* [Watson Discovery News](https://console.bluemix.net/docs/services/discovery/watson-discovery-news.html#watson-discovery-news?cm_sp=dw-bluemix-_-code-_-devcenter): Explore the Watson Discovery News documentation.
+* [Watson Discovery News](https://cloud.ibm.com/docs/services/discovery/watson-discovery-news.html#watson-discovery-news?cm_sp=dw-bluemix-_-code-_-devcenter): Explore the Watson Discovery News documentation.
 * [Create a cognitive news search app](https://developer.ibm.com/code/journey/create-a-cognitive-news-search-app/): Follow along with a news search and trends web app journey.
 * [Watson Discovery and Exploration blog-1](https://www.ibm.com/blogs/watson/2017/04/box-discovery-provides-pre-enriched-collection-2-months-internet-news-content/): Out of the box, Discovery provides a pre-enriched collection of 2 months of internet news content.
 * [Watson Discovery and Exploration blog-2](https://www.ibm.com/blogs/watson/2017/07/how-enriched-and-faster-news-discovery-fuels-business-development-and-growth/): Find out how enriched and faster news discovery fuels business development and growth.
