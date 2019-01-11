@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
+[![Build Status](https://api.travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
 
 # Watson Discovery News Alerting
 
@@ -36,13 +36,13 @@ The Code Pattern highlights the steps required to build a front-end management i
 # Featured technologies
 
 * [Node.js](https://nodejs.org/en/) - An asynchronous event driven JavaScript runtime, designed to build scalable applications
-* [React](https://facebook.github.io/react/) - Javascript library for building User Interfaces
+* [React](https://reactjs.org/) - Javascript library for building User Interfaces
 * [Express](https://expressjs.com) - A popular and minimalistic web framework for creating API and Web server
 * [Yarn](https://yarnpkg.com) - Fast, reliable and secure dependency manager for node.js
 
 # Watch the Video
 
-[![](http://img.youtube.com/vi/zFl-2FybDdY/0.jpg)](https://youtu.be/zFl-2FybDdY)
+[![](https://img.youtube.com/vi/zFl-2FybDdY/0.jpg)](https://youtu.be/zFl-2FybDdY)
 
 # Steps
 
@@ -61,7 +61,7 @@ $ git clone https://github.com/ibm/watson-discovery-news-alerting
 Create the following service:
 
   * [**Watson Discovery**](https://cloud.ibm.com/catalog/services/discovery) - name the service `wdna-discovery`
-  * [**Cloudant NoSQL DB**](https://cloud.ibm.com/catalog/services/cloudant-nosql-db) - name the service `wdna-cloudant`
+  * [**Cloudant NoSQL DB**](https://cloud.ibm.com/catalog/services/cloudant) - name the service `wdna-cloudant`
 
 ## Run the application locally
 
@@ -178,26 +178,26 @@ Error: listen EADDRINUSE :::{port}
 * [Demo on Youtube](https://youtu.be/zFl-2FybDdY): Watch the video.
 * [Watson Node.js SDK](https://github.com/watson-developer-cloud/node-sdk): Download the Watson Node SDK.
 * [Watson News Queries Video](https://youtu.be/N-HaIpPGde0): Watch how we created the queries for this Code Pattern.
-* [Cognitive discovery architecture](https://www.ibm.com/cloud/garage/content/architecture/cognitiveDiscoveryDomain): Learn how this Code Pattern fits into the Cognitive discovery Reference Architecture.
+* [Cognitive discovery architecture](https://www.ibm.com/cloud/garage/architectures/cognitiveDiscoveryDomain): Learn how this Code Pattern fits into the Cognitive discovery Reference Architecture.
 * [Watson Discovery Service Updates for News and NLP](https://www.ibm.com/blogs/bluemix/2017/08/watson-discovery-service-updates-news-nlp/): Learn what enhancements are being made to the service.
 * [Watson Discovery Demo](https://discovery-news-demo.mybluemix.net/?cm_sp=dw-bluemix-_-code-_-devcenter): Unlock hidden value in data to find answers, monitor trends and surface patterns.
 * [Watson Discovery News](https://cloud.ibm.com/docs/services/discovery/watson-discovery-news.html#watson-discovery-news?cm_sp=dw-bluemix-_-code-_-devcenter): Explore the Watson Discovery News documentation.
-* [Create a cognitive news search app](https://developer.ibm.com/code/journey/create-a-cognitive-news-search-app/): Follow along with a news search and trends web app journey.
+* [Create a cognitive news search app](https://developer.ibm.com/patterns/create-a-cognitive-news-search-app/): Follow along with a news search and trends web app journey.
 * [Watson Discovery and Exploration blog-1](https://www.ibm.com/blogs/watson/2017/04/box-discovery-provides-pre-enriched-collection-2-months-internet-news-content/): Out of the box, Discovery provides a pre-enriched collection of 2 months of internet news content.
 * [Watson Discovery and Exploration blog-2](https://www.ibm.com/blogs/watson/2017/07/how-enriched-and-faster-news-discovery-fuels-business-development-and-growth/): Find out how enriched and faster news discovery fuels business development and growth.
 * [Watson Discovery configurataion](https://www.ibm.com/watson/developercloud/doc/discovery/building.html#understanding-the-difference-between-entities-concepts-and-keywords): Understanding the difference between entities, concepts, and keywords.
 * [Recharts](http://recharts.org/): A composable charting library built on React components.
 * [Ngrok](https://ngrok.com/): Establish secure tunnels from a public endpoint to a local host.
-* [Jest](https://facebook.github.io/jest/): A JavaScript testing framework.
+* [Jest](https://jestjs.io/): A JavaScript testing framework.
 
 # Learn more
 
-* **Artificial Intelligence Code Patterns**: Enjoyed this Code Pattern? Check out our other [AI Code Patterns](https://developer.ibm.com/code/technologies/artificial-intelligence/).
+* **Artificial Intelligence Code Patterns**: Enjoyed this Code Pattern? Check out our other [AI Code Patterns](https://developer.ibm.com/technologies/artificial-intelligence/).
 * **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
 * **With Watson**: Want to take your Watson app to the next level? Looking to utilize Watson Brand assets? [Join the With Watson program](https://www.ibm.com/watson/with-watson/) to leverage exclusive brand, marketing, and tech resources to amplify and accelerate your Watson embedded commercial solution.
 
 # License
 
-This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt).
+This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
-[Apache Software License (ASL) FAQ](http://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+[Apache Software License (ASL) FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
