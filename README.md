@@ -6,7 +6,7 @@ In this code pattern, we will build a Node.js web application that will use the 
 
 Watson Discovery News is a default data collection that is associated with the Watson Discovery Service. It is a dataset of primarily English language news sources that is updated continuously, with approximately 300,000 new articles and blogs added daily.
 
-The focus of this code pattern is to monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Users can recieve periodic email alerts about a product or brand and how they're perceived in the News.
+The focus of this code pattern is to monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Users can receive periodic email alerts about a product or brand and how they're perceived in the News.
 
 Alert tracking can be set up for the following areas:
 * The product
@@ -30,7 +30,7 @@ The code pattern highlights the steps required to build a front-end management i
 
 # Included components
 
-* [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): A cognitive search and content analytics engine for applications to identify patterns, trens, and actionable insights.
+* [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): A cognitive search and content analytics engine for applications to identify patterns, trends, and actionable insights.
 * [Cloudant NoSQL DB for IBM Cloud](https://cloud.ibm.com/docs/services/Cloudant/cloudant.html#overview): A fully managed data layer designed for modern web and mobile applications that leverages a flexible JSON schema.
 
 # Featured technologies
