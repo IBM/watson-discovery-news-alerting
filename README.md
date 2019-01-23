@@ -2,11 +2,11 @@
 
 # Watson Discovery News Alerting
 
-In this code pattern, we will build a Node.js web application that will use the Watson Discovery Service to access Watson Discovery News.
+In this Code Pattern, we will build a Node.js web application that will use the Watson Discovery Service to access Watson Discovery News.
 
 Watson Discovery News is a default data collection that is associated with the Watson Discovery Service. It is a dataset of primarily English language news sources that is updated continuously, with approximately 300,000 new articles and blogs added daily.
 
-The focus of this code pattern is to monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Users can recieve periodic email alerts about a product or brand and how they're perceived in the News.
+The focus of this Code Pattern is to monitor a product's marketplace life-cycle using Watson's Discovery service to intelligently alert when a product's stance in the marketplace has changed. Users can recieve periodic email alerts about a product or brand and how they're perceived in the News.
 
 Alert tracking can be set up for the following areas:
 * The product
@@ -15,18 +15,18 @@ Alert tracking can be set up for the following areas:
 * Positive or negative product sentiment
 * Stock prices
 
-The code pattern highlights the steps required to build a front-end management interface to search Watson News and a back-end service which periodically sends alerts out related to customizable queries.
+The Code Pattern highlights the steps required to build a front-end management interface to search Watson News and a back-end service which periodically sends alerts out related to customizable queries.
 
-![architecture](doc/source/images/architecture.png)
+![](doc/source/images/architecture.png)
 
 ## Flow
 
 1. The user interacts with the backend server via the app UI. The frontend app UI uses React to render search results and can reuse all of the views that are used by the backend for server side rendering. The frontend is using watson-react-components and is responsive.
-1. User input is processed and routed to the backend server, which is responsible for server side rendering of the views to be displayed on the browser. The backend server is written using express and uses express-react-views engine to render views written using React.
-1. The backend server stores subscription information in a Cloudant NonSQL database for product tracking.
-1. The backend server sends user requests to the Watson Discovery Service. It acts as a proxy server, forwarding queries from the frontend to the Watson Discovery Service API while keeping sensitive API keys concealed from the user.
-1. The Watson Discovery Service queries the Watson News Collection for articles related to the product.
-1. The backend server sends periodic updates to email.
+2. User input is processed and routed to the backend server, which is responsible for server side rendering of the views to be displayed on the browser. The backend server is written using express and uses express-react-views engine to render views written using React.
+3. The backend server stores subscription information in a Cloudant NonSQL database for product tracking.
+4. The backend server sends user requests to the Watson Discovery Service. It acts as a proxy server, forwarding queries from the frontend to the Watson Discovery Service API while keeping sensitive API keys concealed from the user.
+5. The Watson Discovery Service queries the Watson News Collection for articles related to the product.
+6. The backend server sends periodic updates to email.
 
 # Included components
 
@@ -42,19 +42,18 @@ The code pattern highlights the steps required to build a front-end management i
 
 # Watch the Video
 
-[![video](https://img.youtube.com/vi/zFl-2FybDdY/0.jpg)](https://youtu.be/zFl-2FybDdY)
+[![](https://img.youtube.com/vi/zFl-2FybDdY/0.jpg)](https://youtu.be/zFl-2FybDdY)
 
 # Steps
 
 1. [Clone the repo](#1-clone-the-repo)
-1. [Create Watson Services with IBM Cloud](#2-create-watson-services-with-ibm-cloud)
+2. [Create Watson Services with IBM Cloud](#2-create-watson-services-with-ibm-cloud)
 
 ## 1. Clone the repo
 
 Clone the `watson-discovery-news-alerting` locally. In a terminal, run:
-
-```bash
-git clone https://github.com/ibm/watson-discovery-news-alerting
+```
+$ git clone https://github.com/ibm/watson-discovery-news-alerting
 ```
 
 ## 2. Create Watson Services with IBM Cloud
@@ -68,48 +67,39 @@ Create the following service:
 
 1. Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com)
 2. Install all of the dependencies by running `yarn`. This will install of the node modules specified in [`package.json`](package.json)
-
-```bash
-cd app
-yarn
 ```
-
+$ cd app
+$ yarn
+```
 3. Copy the `env.sample` to `.env`
-
-```bash
-cp .env.sample .env
 ```
-
+$ cp .env.sample .env
+```
 4. Edit the `.env` file and enter your Watson Discovery and Cloudant NoSQL DB credentials. Add SMTP Mail settings if you wish to use the tracking feature.
-
 5. Build and start the main app.
-
-```bash
-yarn run build
-yarn start
 ```
-
+$ yarn run build
+$ yarn start
+```
 6. Build and start the tracking app.
-
-```bash
-yarn run start-notifier
 ```
-
-7. Open a browser and go to `http://localhost:4391`
+$ yarn run start-notifier
+```
+6. Open a browser and go to `http://localhost:4391`
 
 ## Deploy and run the application on IBM Cloud
 
 To deploy to IBM Cloud make sure you have the IBM Cloud CLI tool installed. Then run the following commands to connect it with IBM Cloud and login with your IBM Cloud credentials.
 
-```bash
-cd watson-discovery-news-alerting
-ibmcloud login
+```sh
+$ cd watson-discovery-news-alerting
+$ ibmcloud login
 ```
 
 Run the following command to deploy and run the alerting and notifier apps on the IBM Cloud. It will automatically connect to your existing Watson Discovery and Cloudant NoSQL DB services **if** your service names match the names specified in the `manifest.yml` file.
 
-```bash
-ibmcloud cf push
+```sh
+$ ibmcloud cf push
 ```
 
 If the `ibmcloud cf push` command complains that the application name is already taken, change the lines in the `manifest.yml` to have a custom application name specific for your setup:
@@ -121,39 +111,38 @@ applications:
   path: ./app
 ...
 ```
-
 Two IBM Cloud applications should be created and running:
 * watson-discovery-news-alerting
 * watson-discovery-news-alerting-notifier
 
 Set the environment variables required for each the notifier service to perform properly. Use the values unique to your setup:
 
-```bash
-ibmcloud cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host":"smtp.gmail.com","user":"xxx@gmail.com","pass":"xxx","fromEmail":"xxx@gmail.com"}'
-ibmcloud cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
+```sh
+$ ibmcloud cf set-env watson-discovery-news-alert-notifier SMTP_SETTINGS '{"host":"smtp.gmail.com","user":"xxx@gmail.com","pass":"xxx","fromEmail":"xxx@gmail.com"}'
+$ ibmcloud cf set-env watson-discovery-news-alert-notifier BASE_URL 'https://watson-discovery-news-alerting.mybluemix.net'
 ```
 
 Go to the URL route that is associated with the `watson-discovery-news-alerting` app in IBM Cloud to view the application. Typically, this would be `https://watson-discovery-news-alerting.mybluemix.net`.
 
 # Sample output
 
-![sample_output](doc/source/images/sample-output.png)
+![](doc/source/images/sample-output.png)
 
 # General Project Layout
 
 The server which hosts the React web application, acts as an API to Watson, and communicates with the notifier App can be found at:
 
-```bash
+```
 ./app/server.js
 ```
 
 The server which periodically emails news alerts to subscribed users can be found at:
 
-```bash
+```
 ./app/notifier.js
 ```
 
-![detailed_architecture](doc/source/images/detailed-architecture.png)
+![Architecture Diagram](doc/source/images/detailed-architecture.png)
 
 # Architecture
 
@@ -181,15 +170,14 @@ option.
 
 If the port is unavailable, you will see the following error:
 
-```bash
+```
 Error: listen EADDRINUSE :::{port}
 ```
 
 # Links
-
 * [Demo on Youtube](https://youtu.be/zFl-2FybDdY): Watch the video.
 * [Watson Node.js SDK](https://github.com/watson-developer-cloud/node-sdk): Download the Watson Node SDK.
-* [Watson News Queries Video](https://youtu.be/N-HaIpPGde0): Watch how we created the queries for this code pattern.
+* [Watson News Queries Video](https://youtu.be/N-HaIpPGde0): Watch how we created the queries for this Code Pattern.
 * [Cognitive discovery architecture](https://www.ibm.com/cloud/garage/architectures/cognitiveDiscoveryDomain): Learn how this Code Pattern fits into the Cognitive discovery Reference Architecture.
 * [Watson Discovery Service Updates for News and NLP](https://www.ibm.com/blogs/bluemix/2017/08/watson-discovery-service-updates-news-nlp/): Learn what enhancements are being made to the service.
 * [Watson Discovery Demo](https://discovery-news-demo.mybluemix.net/?cm_sp=dw-bluemix-_-code-_-devcenter): Unlock hidden value in data to find answers, monitor trends and surface patterns.
