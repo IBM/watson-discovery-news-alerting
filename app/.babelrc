@@ -1,11 +1,5 @@
 {
-  "presets": [
-    "@babel/env",
-    "@babel/react"
-  ],
-  "ignore": [
-    "node_modules"
-  ],
+  "presets": ["es2015", "node6", "react", "stage-3"],
   "plugins": []
 }
 
