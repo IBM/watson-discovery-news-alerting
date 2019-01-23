@@ -109,9 +109,9 @@ class AlertExample extends Component {
   }
 
   onShowExampleAggregationResponse() {
-    this.setState({
-      showExampleAggregationResponse: !this.state.showExampleAggregationResponse
-    })
+    this.setState(prevState => ({
+      showExampleAggregationResponse: !prevState.showExampleAggregationResponse
+    }))
   }
 
   onExitExampleResultResponse() {
@@ -121,9 +121,9 @@ class AlertExample extends Component {
   }
 
   onShowExampleResultResponse() {
-    this.setState({
-      showExampleResultResponse: !this.state.showExampleResultResponse
-    })
+    this.setState(prevState => ({
+      showExampleResultResponse: !prevState.showExampleResultResponse
+    }))
   }
 
   // Sort each article returned by its date in the aggregation results, this is used to make the chart legible.
