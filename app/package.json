@@ -60,7 +60,7 @@
     "webpack-dev-server": "^3.1.14",
     "webpack-manifest-plugin": "^1.1.0",
     "whatwg-fetch": "^2.0.3",
-    "yarn": "^1.9.4"
+    "yarn": "^1.17.3"
   },
   "scripts": {
     "startdev": "./node_modules/babel-cli/bin/babel-node.js ./scripts/start.js",
