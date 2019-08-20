@@ -1,5 +1,10 @@
 [![Build Status](https://api.travis-ci.org/IBM/watson-discovery-news-alerting.svg?branch=master)](https://travis-ci.org/IBM/watson-discovery-news-alerting)
 
+
+# WARNING: This repository is no longer maintained :warning:
+
+> This repository will not be updated. The repository will be kept available in read-only mode. Refer to https://github.com/IBM/watson-discovery-news for a similar example.
+
 # Watson Discovery News Alerting
 
 In this code pattern, we will build a Node.js web application that will use the Watson Discovery Service to access Watson Discovery News.
